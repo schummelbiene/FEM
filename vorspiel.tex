@@ -1,0 +1,33 @@
+\begin{itemize}
+\item Prüfungen der beiden Vorlesungen getrennt
+\item Aufgaben bei Herrn Schopf auf der Homepage
+\item Buch: Numerische Behandlung partieller Differentialgleichungen (Vorlesung orientiert sich stark an diesem)
+\item Buch: Die Finite-Elemente-Methode für Anfänger (sehr praktisch orientiert)
+\end{itemize}
+\section{Einige grundlegende Typen partieller DGL}
+\begin{beispiel} Navier-Stokes-Gleichungen
+  \begin{align*}
+    u_t + u \nabla u + \nabla p - \nu \Delta u &= f \\
+    \div u &= 0 \text{ + Randbedingungen}
+  \end{align*}
+  mit dem Geschwindigkeitsvektor $u$ und Druck $p$.
+\end{beispiel}
+Zunächst einmal sollte man numerisch lösen können:
+\begin{enumerate}
+\item Randwertproblem für Poissongleichung (elliptisch)
+  \begin{align*}
+    - \Delta u &= f \text{ in $\Omega$}\\
+    u &= 0 \text{ auf } \partial \Omega
+  \end{align*}
+\item Wärmeleitungsgleichung (parabolisch)
+  \begin{align*}
+    u_t - \Delta u = f \text{ in $(0,T) \times \Omega$}
+  \end{align*}
+mit Anfangs- und Randbedingungen .
+\end{enumerate}
+\begin{beispiel} Black-Scholes-Gleichung (entartende parabolisch Gleichung)
+  \begin{align*}
+    v_t + 0.5 \sigma^2 s^2 V_{ss} + (r - \delta)s V_s -r V = 0
+  \end{align*}
+  
+\end{beispiel}

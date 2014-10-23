@@ -1,0 +1,341 @@
+\section{Variationsgleichungen}
+$V$ sei ein Hilbertraum, $V'$ der zugehörige Dualraum.
+
+$a: V \times V \to \R$ sei bilinear. $f$ sei ein lineares Funktional von $V$.
+
+Variationsgleichung: Gesucht ist ein $u \in V$, sodass
+\begin{align*}
+  a(u,v) = f(v) \qquad v \in V
+\end{align*}
+
+\begin{beispiel}
+  Umformung einer elliptische Randwertaufgabe in eine Variationsgleichung
+  \begin{align*}
+    - \Delta u + c u = f\\
+u_{|\Gamma_1} = 0\\
+\frac{\partial u}{\partial n} + p u |_{\Gamma_2} = q
+  \end{align*}
+(Teile den Rand in $\Gamma_1$ und $\Gamma_2$.)
+
+$V = \set{v \in H^1: \gamma v |_{\Gamma_1} = 0}$ Wie üblich:
+\begin{align*}
+  - \int_\Gamma \frac{\partial u}{\partial n} v + \int_{\O} \nabla u \nabla v + \int_\O c u v &= \int_\O f v\\
+  \int_{\O} \nabla u \nabla v + \int_\O c u v + \int_{\Gamma_2}p u v &= \int_\O f v + \int_{\Gamma_2} q v \qquad \forall v \in V 
+\end{align*}
+($u \in V$)
+
+Raum  $= H^1$+ Berücksichtigung von homogenen Dirichletbedingungen (wichtig für die Diskretisierung!)
+\end{beispiel}
+
+%\datum{20. Oktober 2014}
+
+äquivalent zur Variationsgleichung ist die Operatorgleichung
+\begin{align*}
+  A u = f
+\end{align*}
+(Gleichung in $V'$), und $f \in V'$ ($g \in V', h \in V, <g, v> = g(h)$)
+
+Zurück zum Beispiel: $a(u, v) = \int_\O \nabla u \nabla v + \int_\O c u v + \int_{\Gamma_2} p u v$, $f(v)= \int_\O f v + \int_{\Gamma_2} q v$, $V 0 \set{v \in H' : v_{|\Gamma_1}= 0}$ 
+
+Kommt man von der Variationsgleichung zurück zur starken Formulierung?
+\begin{itemize}
+\item $v \in H_0^1(\O)$: 
+  \begin{align*}
+    (\nabla u, \nabla v)+ (c u, v) = (f, v)
+  \end{align*}
+  (partielle Integration des ersten Terms rückgängig) $-(\Delta u, v)+ \int_\Gamma \frac{\partial u}{\partial n}v+ (c u , v) = (f, v)$. Wenn $u \in H^2$ ist, so folgt $-\Delta u + c u = f$ fast überall.
+\item Zurück zur Robin-Bedingung? $v \in V$: $u \in H^2$: $-\Delta u + cu= f$
+  \begin{align*}
+    -\int_{\Gamma_2} \frac{\partial u}{\partial n} v + (\nabla u, \nabla v) + (cu, v) =(f, v)\\
+\int_{\Gamma_2} puv + (\nabla u, \nabla v) + (cu, v) = (f, v)+ \int_{\Gamma_2}q v
+  \end{align*}
+Voneinander abziehen ergibt:
+\begin{align*}
+  -\int_{\Gamma_2}\frac{\partial u}{\partial n} v+ \int_{\Gamma_2}p u v = \int_{\Gamma_2} q v \\
+\Rightarrow \frac{\partial u}{\partial n} + pu = q
+\end{align*}
+auf $\Gamma_2$.
+\end{itemize}
+\begin{beispiel} Stokes-Probleme (2D)
+  \begin{align*}
+    - \Delta u_1 + \partial_x p = f_1 \\
+    - \Delta u_2 + \partial_y p = f_2 \\
+    \partial_x u_1 + \partial_y u_2 = 0
+  \end{align*}
+mit dem Druck $p$, dem Geschwindigkeitsfeld $u_1, u_2$ und Randbedingungen, zum Beispiel $u_1, u_2 |_{\partial \O} = 0$. $u \in V$:
+\begin{align*}
+  V = \set{v \in (H_0^1(\O)^2), \div v = 0}
+\end{align*}
+Mit partieller Integration (Integrale fallen weg!) und Multiplikation von $v_1, v_2$ erhalten wir
+\begin{align*}
+&  a(u, v)= (\nabla u_1, \nabla v_1) + (\nabla u_2, \nabla v_2) + \int_\O \partial_x f v_1 + \int_\O \partial_y p v_2 = (f_1, v_1)+ (f_2, v_2)\\
+&  a(u, v)= (\nabla u_1, \nabla v_1) + (\nabla u_2, \nabla v_2) = (f_1, v_1)+ (f_2, v_2)
+\end{align*}
+\end{beispiel}
+  
+\begin{beispiel} Lineare Elastizitätstheorie (3D)
+Wir betrachten ein Gebiet mit Rändern $\Gamma_0, \Gamma_1$. Gesucht sind Verschiebungen $u_i$, $\sigma_{ij}$ ist der Spannungstensor ($i,j = 1, 2, 3$, $\eps_{i,j}$ ist der Verzerrungstensor, $\eps_{i,j} = 0.5 (\partial_{x_j}u_i + \partial_{x_i}u_j)$), $\delta_{ij}$ ist Diracmaß.
+Nun gilt mit den Lamé-Konstanten $\lambda, \mu$
+\begin{align*}
+  \sigma_{i,j} &= \lambda \div u \delta_{i,j} + 2 \mu \eps_{i,j}\\
+  \partial_{x_j} \sigma_{i,j} + f_i=0 
+\end{align*}
+Summenkonvention?!
+
+Randbedingungen: $u_i|_{\Gamma_0} = 0$, $\sigma_{i,j}n_j = g_j$ auf $\Gamma_1$ ($n_j$ ist die $j$-te Komponente des Normalenvektors).
+\begin{align*}
+  V = \set{v \in (H^1)^3, v = 0 \text{ auf } \Gamma_1}
+\end{align*}
+Bilinearform: $a(u,v) = \int_\O \sigma_{i,j}(u) \eps{ij}(v)$, $f(v)= \int_{\Gamma_1}g_i v_i+ \int_\O f_iv_i$
+oder 
+\begin{align*}
+a(u,v) = \int_\O \lambda \div u \div v + \int_\O2 \mu \eps_{ij}(u)\eps_{ij}(v)
+\end{align*}
+(symmetrische Bilinearform)
+\end{beispiel}
+
+\begin{beispiel}Ein Plattenproblem
+
+Gesucht sind Verschiebungen $u_{ij}$, Biegemomente $M_{ij}$
+
+Es gilt: 
+\begin{align*}
+  M_{ij} &= \alpha \Delta \delta_{ij} + \beta \partial^2_{x_i x_j} u\\
+\partial^2_{x_i x_j} u_{ij} &= f
+\end{align*}
+  Das ist eine partielle Differentialgleichung vierter Ordnung. Bei einer fest eingespannten Platte:
+$u_{|_{\partial \O}} = 0$, $\partial_n u_{|_{\partial \O}} = 0$
+
+Hier ist $V = H_0^2$. Zweimalige partielle Integration liefert
+\begin{align*}
+  a(u, 0) = \alpha\int_\O \Delta u \Delta v + \beta \int_\O \partial^2_{x_i x_j} u \partial^2_{x_i x_j}v
+\end{align*}
+eine symmetrische Bilinearform.
+\end{beispiel}
+
+$V$ sei ein Hilbertraum. $f \in V'$ heißt beschränkt, falls ein $C$ existiert mit $\norm{f(v)}\leq C \nnorm{v}$.
+
+\begin{definition}
+  $a(\cdot, \cdot)$ heißt
+  \begin{itemize}
+  \item beschränkt, falls $\norm{a(v, w)}\leq C \nnorm{v} \nnorm w$
+  \item symmetrisch, falls $a(v, w) = a(w, v)$
+  \item positiv, falls $a(v, v) > 0 \quad \forall v \neq 0$
+  \item V-elliptisch (koerzitiv), falls $\alpha > 0$ existiert mit
+    \begin{align*}
+      a(v, v) \geq \alpha \nnorm{v}^2.
+    \end{align*}
+  \end{itemize}
+\end{definition}
+Es sei $a(u,v) = f(v)$.
+\begin{satz}
+  Ist $a(\cdot, \cdot)$ positiv, so ist die Lösung unserer Variationsgleichung eindeutig.
+\end{satz}
+\begin{beweis}
+  Angenommen, wir haben zwei Lösungen $u_1, u_2$.
+  \begin{align*}
+    a(u_1, v) = f(v)\\
+    a(u_2, v) = f(v)\\
+\Rightarrow a(u_1 - u_2, u_1 - u_2) = 0  \Rightarrow u_1 = u_2
+  \end{align*}
+\end{beweis}
+\begin{satz}
+  Ist $a(\cdot, \cdot)$ eine symmetrische und V-elliptisch, so exisitiert stets eine Lösung.  
+\end{satz}
+\begin{beweis}
+  Beruht auf Riesz'schem Darstellungssatz. Wenn nun $a(\cdot, \cdot)$ symmetrisch und V-elliptisch ist, so ist $a(v, w)$ ein Skalarprodukt auf $V$ und $(a(v,v)^{0.5}) $ die entsprechende Norm (V-Elliptizität! 'Neue Norm' und 'neues Skalarprodukt' auf dem Hilbertraum). Diese Norm heißt auch Energetische Norm. 
+  \begin{align*}
+    a(u,v) = f(v)
+  \end{align*}
+Existiert $u$? Ja, nach Riesz. 
+\end{beweis}
+\begin{lemma} Zusammenhang zwischen Variationsgleichung und Variationsproblem 
+  
+$a$ sei symmetrisch und positiv. Dann minimiert $u \in V$ das Funktional
+\begin{align*}
+  J(v) = 0.5 a(v,v) -f(v)
+\end{align*}
+(Variationsproblem) genau dann, wenn
+\begin{align*}
+  a(u,v) = f(v) \qquad \forall v \in V.
+\end{align*}
+\end{lemma}
+\begin{beweis}
+  Siehe eigener Vortrag.
+\end{beweis}
+Dirichlet studierte folgendes Problem: 
+\begin{align*}
+  J(v) = 0.5 \int_\O (\nabla v)^2 - \int_\O f v
+\end{align*}
+für $v \in C^1(\bar \O) \cap C(\bar \O)$ mit $v_{| \partial \O } = 0$
+Er bewies: es gibt eine Lösung. Weierstraß bewies, dass das nicht stimmt. Entsprechende Variationsgleichung:
+\begin{align*}
+  (\nabla u, \nabla v) = (f, v)
+\end{align*}
+$u \in H_0^1(\O)$, $v \in H^2_0 (\O)$. Hier exisitert eine Lösung! Dirichlet hat den falschen Raum betrachtet.
+%\datum{21. Oktober 2014}
+\begin{lemma} Lax-Milgram
+  
+Ist $a(\cdot, \cdot)$ beschränkt und V-elliptisch, so besitzt die Variationsgleichung eine Lösung.
+\end{lemma}
+\begin{beweis} 
+  Wir betrachten das Hilfsproblem:
+
+Finde für gegebenes $y \in V$ ein $z \in V$ mit 
+\begin{align*}
+  &  (z,v) = (y, v) - r(a(y, v)-f(v)), \quad r \in \R\\
+  &  z = T_r y
+\end{align*}
+($z$ exisiert nach dem Riesz'schen Darstellungssatz). Feststellung: Ein Fixpunkt von $T_r$ löst die Variationsgleichung. Sind die Vorraussetzungen für den Banachschen Fixpunktsatz gegeben? Banachraum, noch zu zeigen: Ist die Abbildung kontraktiv für gewisses $r$? Nächstes Hilfsproblem: 
+\begin{align*}
+  (Sp, v) = a(p, v) \quad \forall v \in V
+\end{align*}
+($p$ ist gegeben, nach Riesz existiert $Sp$ eindeutig). Schließlich:
+\begin{align*}
+  f(0) = (g, v)
+\end{align*}
+Damit gilt: $(T_ry, v) = (y -r Sy + ry, v)$ 
+Nachweis der Kontraktivität:
+\begin{align*}
+  \nnorm{T_r y - T_r w }^2 &= (T_r y - T_r w, T_r y -T_r w)\\
+\Rightarrow \qquad \nnorm{T_r y - T_r w}^2 &= (y-w-rS(y-w), y-w-rS(y-w))\\
+&= \nnorm{y-w}^2 - 2r(y-w, S(y-w)) + r^2  \nnorm{S(y-w)}^2\\
+& \leq (1- 2 \alpha r+ Mr^2)\nnorm{y-w}^2 
+\end{align*}
+wobei $(1- 2 \alpha r+ M^2r^2)<1$ für $r \in (0, 2 \alpha/M) $ 
+mit der Nebenrechnung unter Verwendung der V-Elliptizität:
+\begin{align*}
+&  \nnorm{Sp}^2 = a(p, Sp)\leq m \nnorm{p } \nnorm{Sp}\\
+& \nnorm{Sp} \leq M \nnorm p
+\end{align*}
+und
+\begin{align*}
+  (Sp, p) = a(p,p) \geq \alpha \nnorm{p}^2
+\end{align*}
+\end{beweis}
+Nebenrechnung:
+$a (u,u) = f(u)$, $\alpha \nnorm{u}^2 \leq \nnorm{f}_* \nnorm u$
+mit $\nnorm \cdot_*$ Funktionalnorm
+\paragraph{Stabilität}$\nnorm u \leq \alpha^{-1} \nnorm f_*$
+\begin{beispiel}
+  \begin{enumerate}
+  \item Sei $V = H_0^1(\O)$, $a(u, v) = (\nabla u, \nabla v)$, die Beschränktheit ist oft trivial mit Cauchy-Schwarz
+    \begin{align*}
+      - \Delta u = f \\
+      u_{|\partial \O} = 0
+    \end{align*}
+    Zur V-Elliptizität: Norm sei Seminorm: $a(v, v) = \norm v_1^2$ gegeben.
+  \item Konvektions- Diffusions-Problem
+    \begin{align*}
+      -\Delta u + b \nabla u + c u = f\\
+      u_{|\partial \O} = 0
+    \end{align*}
+    Teile der Gleichung: Diffusion + Konvektiom + Reaktion. $V = H_0^1(\O)$
+    \begin{align*}
+      a(u, v) = (\nabla u, \nabla v) + (b \nabla u + c u, v)
+    \end{align*}
+    ist eine nichtsymmetrische Bilinearform
+    \begin{itemize}
+    \item Beschräktheit: $b \in L^\infty$, $c\in L^\infty$ trivial
+    \item V-Elliptizität:
+      \begin{align*}
+        a(v, v) = \norm v _1^2 + (cv, v) + (b \nabla v, v)\\
+= \norm v_1^2 + ((c- 0.5 \div b)v, v)
+      \end{align*}
+      Nebenrechnung (in 2D) mit partieller Integration: 
+      \begin{align*}
+        \int_\O b_1 v_x v = - \int_\O \frac{\partial}{\partial x}(b_1 v)v = - \int_\O (b_1)_xv^2 - \int_\O b_1 v_x v 
+      \end{align*}
+also
+\begin{align*}
+  \int_\O b_1 v_x v = -0.5 \int_\O (b_1)_xv^2
+\end{align*}
+Norm sei Seminorm: Vorraussetzung: $c - 0.5 \div b \geq 0 \Rightarrow$ V-Elliptizität 
+    \end{itemize}
+\item
+  \begin{align*}
+    - \Delta u + c u = f\\
+\frac{\partial u}{\partial n} = 0 
+  \end{align*}
+auf $\partial \O$, $V = H^1(\O)$. 
+\begin{align*}
+  a(u, v) = (\nabla u, \nabla v) + (c u, v)
+\end{align*}
+Beschränktheit: trivial
+
+V-Elliptizität: folgt sofort mit $c> c_0 >0$:
+\begin{align*}
+  a(v, v)\geq \min (1, c_0) \nnorm{v}_1^2
+\end{align*}
+interessant: $c = 0$, was zu 
+\begin{align*}
+  -\Delta u = f\\
+\frac{\partial u}{\partial n} = 0
+\end{align*}
+führt. Wähle $V = \set{v \in H^1: \int_{\partial \O} v = 0}$. Dann existiert eine eindeutige Lösung. Warum? In $V$ ist jetzt $\norm \cdot _1$ wieder eine Norm auf $V$. ($\nnorm v _0^2 \leq c(\norm v _1^2 + (\int_{\partial \O} v)^2)$)
+\begin{align*}
+  a(v, v) = (\nabla v, \nabla v) = \norm v_1^2
+\end{align*}
+V-Elliptizität gegeben.
+  \end{enumerate}
+\end{beispiel}
+Im folgenden Lemma betrachten wir zwei verschiedene Hilberträume.
+\begin{lemma} Babuska-Necás (1962)
+Es sei $a(\cdot, \cdot)$ Bilinearform auf $W \times V$ mit 
+
+$a(u,v) = f(v)$
+\begin{itemize}
+\item $\norm {a(ww, v)} \leq C \nnorm w_W \nnorm v_V$
+\item
+  \begin{align*}
+    \sup_V a(w, v )\nnorm v_V^{-1} \geq \gamma \nnorm w _W \qquad (\gamma >0)
+  \end{align*}
+\item $\sup_{w \in W} a(w, v) > 0$ für alle $v \in V$
+\end{itemize}
+Dann besitzt die Variationsgleichung eine eindeutige Lösung. Nachweis der beiden letzten Bedingungen: schwierig!
+\end{lemma}
+\begin{beispiel}Reine Konvektionsgleichungen
+  \begin{align*}
+    v \nabla u + c u = f\\
+u_{\Gamma_-} = 0
+  \end{align*}
+Einströmrand: $\Gamma_- = \set{x \in \Gamma = \partial \O: \; b\cdot n = 0 }$
+\begin{align*}
+  (b \nabla u + c u , v) = (f, v)
+\end{align*}
+Es sind unterschiedliche Räume für $u$ und $v$ sinnvoll. 
+\end{beispiel}
+Für elliptische Randwertaufgaben \emph{zweiter} Ordnung kann man oft auf der Basis des Lax-Milgram-Lemmas Existenz von schwachen Lösungen im $H^1$ oder in Teilräumen vom $H^1$ nachweisen.
+
+Wünschenswert wäre zu wissen, ob sogar $u \in H^2(\O)$ gilt. Wenn das so ist, dann kann man normale Interpolierende definieren. 
+\begin{beispiel}
+  \begin{align*}
+    - \Delta u = f \text{ in } \O, f \in L^2(\O)\\
+u_{|\partial \O} = 0
+  \end{align*}
+  \begin{itemize}
+  \item $u \in H^2$, falls $\partial \O$ ausreichend glatt
+  \item $u \in H^2$, falls $\O$ konvex ist. Es gilt dann sogar $\nnorm u_2 \leq c \nnorm f_0$
+  \end{itemize}
+(Literatur: Grisvard: Elliptic Problems in nonsmooth domains)
+\end{beispiel}
+\begin{beispiel} Nichtkonvexes Gebiet
+  \begin{align*}
+    - \Delta u = 0
+  \end{align*}
+in einen Pacman-Gebiet $\O = \set{B_0(1) \cap S_\omega}$ mit $S_\omega = \set{(r, \phi)| \phi \leq \omega, r > 0}$ siehe Übungsaufgabe auf Blatt 1.
+Randbedingungen: $u_{|\phi = 0}= 0$, $u_{|\phi = \omega}= 0$, $u_{|r = 1}= \sin \pi/\omega \phi$
+  
+Exakte Lösung: $u = r^{\pi/\omega} \sin(\pi/\omega \phi)$
+\begin{itemize}
+\item $\omega > \pi$: $u \notin H^2$ 
+\item $u \in H^{1 + \pi/ \omega - \delta}$ mit $\delta > 0$, beliebig
+\end{itemize}
+Gern genommenes Testgebiet: L-förmig
+\end{beispiel}
+Bei 'Zusammenstoßen' von Dirichlet- und Neumannbedingungen gilt sogar nur 
+\begin{align*}
+  u \in H^{1+\pi/(2\omega) - \delta}
+\end{align*}
+($\omega = \pi/2$: $u \in H^{2- \delta}$, $u \notin H^2$)
+Im obigen Beispiel modifiziere: $u_{|r = 1} = \sin\pi/(2 \omega) \phi$ und $u = r^{\pi/(2 \omega)}\sin(\pi/(2 \omega) \phi)$

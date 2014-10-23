@@ -1,0 +1,389 @@
+\section{Funktionenräume zur schwachen Formulierung elliptischer RWA}
+'Einfache' elliptische RWA: 
+\begin{align*}
+- \D u &= f \text{ in } \Omega \\
+u &= 0 \text{ auf } \partial \Omega
+\end{align*}
+Dabei ist $\Omega \subset \R^2, \R^3$ und offen, beschränkt und zusammenhängend. 
+Was verstehen wir unter eine Lösung dieses Problems? Klassischerweise sollte $u \in C^2(\Omega) \cap C(\bar \Omega)$ sein. Leider existiert so eine klassische Lösung nicht immer. Im eindimensionalen existiert sie, im zweidimensionalen sind wir schon auf die Bedingungen angewiesen. 
+
+Ursachen: komplizierter Rand, $f$ ist unstetig
+
+Ein Ausweg ist ein neuer Lösungsbegriff: \emph{schwache Lösungen}
+
+Grundidee: im Eindimensionalen: $-u'' = f$, $u(0)= u(1) = 0$
+\begin{align*}
+  - \int_0^1 u'' v = \int_0^1 f v  
+\end{align*}
+nun partielle Integration (2D: Integransatz)
+\begin{align*}
+  \left. - u'v \right|_0^1 + \int_0^1 u'v' = \int_0^1 fv
+\end{align*}
+$v$ genüge den Randbedingungen
+\begin{align*}
+  \Rightarrow \int_0^1 u'v' = \int_0^1 fv
+\end{align*}
+genannt: \emph{Variationsgleichung}. Mit der Forderung $u,v \in H_0^1(\Omega)$ (einem Sobolevraum) werden $u$ und $v$ zu schwachen Lösungen.
+
+Ziel der Sobolevräume: Die Integrale der Variationsgleichungen sollen Sinn ergeben und nette Eigenschaften haben. 
+
+$L^p$-Räume:
+\begin{align*}
+  L^p(\Omega) \coloneqq \{ f: \Omega\rightarrow \bar \R \int_\Omega \norm{f}^p < \infty, p \in[1, \infty) \}
+\end{align*}
+Für $p = \infty$:
+\begin{align*}
+  L^\infty(\Omega) \coloneqq \{ f: \Omega\rightarrow \bar \R \esssup f <\infty) \}  
+\end{align*}
+$L^p$-Räume sind Banachräume, für $p = 2$ Hilberträume.
+\begin{align*}
+  \norm{f}_{L^p}= \{\int_\Omega \norm{f}^p\}^{1/p}, \norm{f}_{L^\infty}= \esssup f
+\end{align*}
+Skalarprodukt im $L^2$: $(f,g) = \int_\Omega fg$
+\begin{lemma}
+In Prähilberträumen (Räume mit Skalarprodukt) gilt: 
+Cauchy-Schwarz: $\norm{(f,g)} \leq \norm{f} \norm{g}$
+\end{lemma}
+\begin{beweis}
+  \begin{align*}
+    &(f + \lambda g, f + \lambda g) \geq 0, \lambda \in \R\\
+&(f, f) + 2(f,g)\lambda+ (g,g)\lambda^2 \geq 0
+  \end{align*}
+\end{beweis}
+
+Wir benötigen als nächstes einen angepassten Ableitungsbegriff. Sei dazu $u \in C^1(\bar \Omega)$, $v \in C^\infty(\Omega)$. Dann gilt (partielle Integration)
+\begin{align*}
+  \int_\Omega \frac{\partial u}{\partial x_j} v = \int_{\partial \Omega}u v \cos (n, e^j)- \int_\Omega u \frac{\partial v}{\partial x_j}
+\end{align*}
+mit dem äußeren Normalenvektor $n$ (bezüglich $\partial \Omega$) und dem $j$-ten Einheitsnormalenvektor $e^j$. 
+Sei speziell $v \in C^\infty_0 (\Omega)$. Dann erhalten wir 
+\begin{align*}
+  \int_\Omega \frac{\partial u}{\partial x_j} v = -\int_\Omega u \frac{\partial v}{\partial x_j}
+\end{align*}
+
+\begin{definition}
+  Sei $u$ messbar. Falls eine messbare Funktion $w$ exisitert mit 
+  \begin{align*}
+    \int_\Omega w v = - \int_\Omega u \frac{\partial v}{ \partial x_j},
+  \end{align*}
+so heißt $w$ \emph{schwache Ableitung} von $u$ nach $x_j$.
+\end{definition}
+
+\begin{beispiel}
+  Sei $\Omega = (0,1)$ und $a \in (0,1)$.
+  \begin{align*}
+    f(x) =
+    \begin{cases}
+       f_1(x) &0<x<a \\
+       f_2(x) &a<x<1
+    \end{cases}
+  \end{align*}
+$f_1$ und $f_2$ seien klassisch differentierbar. Ist $f$ schwach differentierbar?
+
+\begin{align*}
+  \int_0^1 f v' &= \int_0^a f_1 v' + \int_a^1 f_2 v'\\ 
+&= f_1 v |_0^a + f_2 v |_a^1 - \int_0^a f_1'v - \int_a^1 f_2'v \\
+&=(f_1(a)-f_2(a))v(a)- \dots = \int_0^1 wv
+\end{align*}
+Ergebnis: $f$ besitzt genau dann eine schwache Ableitung, wenn $f_1(a)= f_2(a)$, diese ist 
+\begin{align*}
+    w =
+    \begin{cases}
+       f_1'(x) &\text{ in } (0,a) \\
+       f_2'(x) &\text{ in } (a,1)
+    \end{cases}  
+\end{align*}
+\end{beispiel}
+
+Fundamentale Erkenntnis:
+\begin{itemize}
+\item Notwendig für schwache Differentierbarkeit ist Stetigkeit
+\item stetige Funktionen, die stückweise klassisch differentierbar sind, sind schwach differentierbar (auch mehrdimensional)
+\end{itemize}
+
+Beispiel: 'übliche' finite Elemente: stetig, stückweise polynomial
+
+Analog zur Definition werden jetzt Ableitungen höherer Ordnung definiert. Schreibweise: $\partial^\alpha \coloneqq \frac{\partial^{\norm{\alpha}}}{\partial x_1^{\alpha_1} \partial x_2^{\alpha_2} \dots \partial x_n^{\alpha_n}}$ mit $\norm{\alpha} = \sum \alpha_i$ und $\alpha_i \geq 0$, ganz.
+
+\begin{definition}
+  Sei $u$ messbar und es exisitere ein messbares $w$ mit 
+  \begin{align*}
+    \int_\Omega w v = (-1)^{\norm{\alpha}} \int_\Omega u \partial^\alpha v
+  \end{align*}
+für alle $v \in C^\infty_0(\Omega)$. Dann heißt $w$ \emph{schwache Ableitung} der Ordnung $\norm{ \alpha}$ von $u$, $w = \partial ^\alpha u$ im schwachen Sinne.
+\end{definition}
+\paragraph{Sobolevräume} von Sobolev, 1935 + x 
+$H^1 (\Omega)$: Raum aller quadratischen Funktionen, deren schwache erste Ableitungen quadratisch integrierbar sind.
+\begin{align*}
+  \norm{u}_1 = \left \{ \int_\Omega u^2 + \int_\Omega \sum_{i= 1}^n \left( \frac{\partial u}{\partial x_i}\right)^2 \right \}
+\end{align*}
+Hilbertraum (vollständig!)
+
+%\datum{14. Oktober 2014}
+\begin{align*}
+  H^1(\Omega) \coloneqq \{ \sigma: \sigma \in L_2, \nabla \sigma \in L_2\}
+\end{align*}
+mit der Norm 
+\begin{align*}
+  \norm{\sigma}_1 = \left( (\sigma, \sigma) + (\nabla \sigma, \nabla \sigma)\right)^{0.5}
+\end{align*}
+Bemerkung zum $C^1(\bar \Omega)$ Normierung? 
+\begin{enumerate}
+\item $\norm{v} \coloneqq \max \norm{v} + \max \norm{\nabla v} \,  \Rightarrow$ Banach-Raum, aber es existiert kein Skalarprodukt mit $(v, v) = \norm v ^2$
+\item $\norm v \coloneqq \left( (v,v) + (\nabla v, \nabla v)\right)^{0.5}$: normierter Raum mit Skalarprodukt: $(u,v)_1 = \int_\O uv + \int_\O \nabla u \nabla v$. Raum ist nicht vollständig, also kein Hilbertraum. Vervollständigung dessen führt auf $H^1$.
+\end{enumerate}
+
+Allemeine Definition von Sobolev-Räumen:
+\begin{align*}
+  W_p^l (\O) = \{ v \in L^p: \partial^\alpha v \in L^p \text{ für } \norm \alpha \leq l \}
+\end{align*}
+mit $p \in [1, \infty], l = 1, 2, \dots $. Fall $p = 2: W_p^l = H^l$.
+Oberer Index: Wie viele Ableitungen existieren im schwachen Sinne?
+
+Unterer Index: 
+
+$W_p^l$ ist Banachraum, für $p = 2$ Hilbertraum.
+
+Norm in $W_p^l(\O)$:
+\begin{align*}
+  \norm v_{W_p^l} \coloneqq \left\{\int_\O \sum_{\norm{\alpha}\leq l} \norm{\partial^\alpha v}^p \right\} ^{1/p}
+\end{align*}
+\begin{bemerkung} (Meyers, Serrin 1964)
+Für $1 \leq p < \infty$ ist $C^\infty(\O) \bigcap W_p^l(\O)$ (bel. oft differentierbar und endliche Norm) dicht im $W_p^l(\O)$.
+Anderer Zugang statt verallgemeinerte Ableitung. Hilfreich, wenn man Ungleichungen beweisen will.
+
+ Wenn man in einem Sobolevraum eine Ungleichung beweisen will: beweise für hinreichend glatte Funktionen, und dann argumertiere, dass diese dicht liegen und folgere dann für andere Funktionen. 
+\end{bemerkung}
+Wir fragen uns: Sind $H^1$-Funktionen stetig?
+
+\paragraph{Fall $n=1$:} $\O = (0,1)$ (wende an $(a+b)^2 = \leq 2(a^2 + b^2)$) und Cauchy-Schwarz für Integrale: 
+\begin{align}
+  v(x) &= v(y) + \int_y^x v'(t) dt \notag \\
+  v^2(x)& \leq 2 \left(v^2(y) + \left(\int_y^x v'\right)^2\right) \notag\\
+  v^2(x)& \leq 2 \left(v^2(y) + \norm{x-y} \left(\int_y^x v'^2\right)\right) \notag \\
+v^2(x)& \leq 2 \left(v^2(y) +  \left(\int_0^1 v'^2\right)\right) \quad \to \int_0^1 dy \notag\\
+v^2 &\leq 2 (\int_0^1 v^2 + \int_0^1 v'^2) \label{eq_star}
+\end{align}
+Also sind im Eindimensionalen die $H^1$-Funktionen beschränkt. Weiter:
+\begin{align}\label{eq_2star}
+  \norm{v(x)- v(y)} \leq \sqrt{x-y} \left( \int_0^1 v'^2 \right) ^{0.5}
+\end{align}
+Arzela-Ascoli: Cauchyfolge aus $H^1 \cap C^\infty$: \eqref{eq_star} impliziert Beschränktheit, \eqref{eq_2star} gleichgradige Stetigkeit, die Grenzfunktionen sind stetig!
+
+\paragraph{Fälle 2D oder 3D} $H^1$-Funktionen können unbeschränkt sein.
+\begin{beispiel} 2D:
+
+$\O$ = EInheitskreis, Polarkoordinaten
+\begin{align*}
+  u(x, y) \coloneqq \ln \ln \frac{2}{\sqrt{x^2 + y^2}} = \ln \ln \frac{2}{r}
+\end{align*}
+$u$ ist unbeschränkt! Aber: $u \in H^1$. Es ist zu zeigen: $\int u^2< \infty$
+
+\begin{align*}
+  \int (u_x^2 + u_y^2)&<\infty \\
+( u_x^2 + u_y^2 &= u_r^2 + r^2u_\phi^2 ) \\
+\int_{EK} \frac{1}{(\ln 2/r)^2} r^{-2} r dr \; d \phi &= 2 \pi \int_0^1 (\ln 2/r)^{-2} r^{-1} dr\\
+&= 2 \pi (-) \int_\infty^{\ln 2} t^{-2} dt \\
+&< \infty
+\end{align*}
+(verwende $\ln 2/r = t$ und $-r^{-1} dr$ = dt). Das ist endlich!
+\end{beispiel}
+\begin{beispiel} 3D
+Einheitskugel, $u = r^{-\alpha}$, $0< \alpha<0.5$ ist nicht beschränkt, aber $u \in H^1$.
+\end{beispiel}
+Warum ist das ärgerlich? Die Lösungen elliptischer RWA zweiter Ordnung liegen im Allgemeinen im $H^1$. Bei der Mehtode der finiten Elemente ist es üblich, den Fehler durch einen Interpolationsfehler abzuschätzen. Für $H^1$-Funktionen ist die 'normale' Interpolierende \emph{nicht} definiert.
+\begin{beispiel}
+  erste schwache Formulierung einer elliptischen RWA
+  \begin{align*}
+    - \Delta u + c u &= f, \qquad c \in L^\infty, f \in L^2\\
+\frac{\partial u}{\partial n} &= 0 \qquad \partial \O
+  \end{align*}
+(homogene Neumannbedingungen)
+\end{beispiel}
+\begin{align*}
+  -\int_\O (\Delta u ) v + \int_\O c u v = \int_\O fv\\
+  -\int_{\partial\O} \frac{\partial u}{\partial n} v + \int_{\O} \nabla u \nabla v \int_\O c u v = \int_\O fv 
+\end{align*}
+gesuct ist $u \in H^1(\O)$ mit 
+\begin{align*}
+   \int_{\O} \nabla u \nabla v \int_\O c u v = \int_\O fv\\
+\end{align*}
+für alle $v \in H^1(\O)$.
+Zu möglichen Randbedingungen: 
+\begin{itemize}
+\item Dirichletbedingungen (1. Art): $u = \phi $auf$ \partial \O$
+\item Neumannbedingungen (2. Art): $\frac{\partial u}{\partial n} = \psi$ auf $\partial \O$
+\item Robinbedingungen (3. Art): $\frac{\partial u}{\partial n} + \alpha u = \chi$ auf $\partial \O$
+\end{itemize}
+Es scheint unklar, wie man Dirichletbedingungen behandeln kann. 
+
+Hier helfen \emph{Spursätze} (RB heißen auch Spuren).
+\begin{lemma} Spurlemma
+
+$\O$ besitze einen Lipschitzrand und sei beschränkt (wie meistens). Dann ist die Abbildung 
+\begin{align*}
+  C^1(\bar \O) \cap W^1_p(\O) \to L^p(\partial \O)
+\end{align*}
+ (Funktionen mit endlicher Norm, die auf dem Rand existieren) linear und beschränkt, das heißt,
+ \begin{align} \label{eq:spur}
+   \norm u _{L^p(\partial \O)} \leq c \norm u_{W_p^1(\O)} \qquad \forall u \in C^1(\bar \O) \cap W^1_p (\O)
+ \end{align}
+
+\end{lemma}
+
+\emph{L-Rand}: $\forall x \in \partial \O$ existiert eine Umgebung, in der der Rand der Graph einer L-stetigen Funktion ist. 
+
+\begin{beispiel} Spursatz gilt nicht
+
+$\O = \{0 < y < x^5 < 1\}$, $u = x^{-1}$, $p = 2$.
+
+$u$ ist in $H^1$, die Spur auf dem Rand liegt aber nicht im $L^2$.
+\begin{itemize}
+\item $\int_0^1 x^{-2}$ exisitert nicht (Spur auf dem Rand nicht in $L^2$)
+\item $u \in H^1$: nachrechnen
+\end{itemize}
+\end{beispiel}
+
+\begin{beweis} Beweis des Spurlemmas für ein Rechteck
+
+Untere Seite des Einheitsquadrats ($= \Gamma_1$):
+\begin{align*}
+    u(x,0) &= u(x,y) + \int_y^0 u_y(x,t) dt\\
+    u^2(x,0) &\leq 2 \left( u^2(x,y) + \int_0^1u^2_y (x,y) dt\right)\\
+      \int_{\Gamma_1} u^2 &\leq 2 \left( \int_0^1u^2(x,y) dx + \int_{\O}u^2_y\right)\\
+   \int_{\Gamma_1} u^2 &\leq 2 \left( \int_\O u^2 + \int_{\O}u^2_y\right)
+  \end{align*}
+\end{beweis}
+\begin{folgerung}
+  Die Abbildung $\gamma: H^1(\O) \cap C^1(\bar \O) \to L^2(\partial \O)$ ist auf einer dichten Menge im $H^1$ eine beschränkte, lineare Abbildung. Sie kann damit unter Beibehaltung von \eqref{eq:spur} auf den $H^1$ erweitert werden:
+  \begin{align*}
+    \norm{\gamma(u)}_{L^2(\partial \O)} \leq C \norm{u}_{1,\O} \qquad \forall u \in H^1(\O)
+  \end{align*}
+$\gamma(u)$ heißt \emph{Spur} oder \emph{Randwert} von $u \in H^1$ auf $\partial \O$.
+\end{folgerung}
+
+\begin{definition}
+  \begin{align*}
+    H_0^1(\O) = \overline{(C^\infty_0)}^{H_1}
+  \end{align*}
+ist der Abschluss von $C_0^\infty$ bezüglich der $H^1$-Norm.
+\end{definition}
+\begin{bemerkung}
+  Nicht jede $L^2$-Funktion auf dem Rand ist Randwert einer Funktion aus dem $H^1$. Raum der Randwerte von $H^1$-Funktionen ($H^{1/2}(\partial \O)$) ist echter Teilraum des $L^2(\partial \O)$ 
+\end{bemerkung}
+\begin{definition}
+  $  H^{-1} (\O)  = $ Dualraum zum $H_0^1(\O)$
+(Menge aller linearen Funktionale auf $H_0^1$)
+\end{definition}
+
+D-Bedinungen: $-\Delta u = f, f \in L^2$
+
+$u = \phi$ auf $\partial \O$, Vorraussetzung $\phi \in H^{1/2}(\partial \O)$. Es existiert eine Funktion $u_0 \in H^1$ mit $f u_0 = \phi$
+Schwache Formulierung:
+\begin{align*}
+  u-u_0 \in H_0^1(\O)\\
+(\nabla u, \nabla v)= (f, v) \quad \forall v\in H_0^1 (\O)
+\end{align*}
+
+Betrachte 
+\begin{align*}
+  -\Delta u = f \text{ in } \O\\
+u =
+\begin{cases}
+  1 & \Gamma_1\\
+0 & \Gamma_2
+\end{cases}
+\end{align*}
+Solche unstetigen Randfunktionen können nicht entstehen. ($\phi \not \in H^{1/2}(\partial \O)$)
+
+Für $V$-Elliptizität brauchen wir nun die \paragraph{Friedrich'sche Ungleichung}
+\begin{itemize}
+\item 1D: $\O = (0,1)$: $v(x) = \int_0^x v'$ mit der Vorraussetzung $v(0) = 0$. Mit Cauchy-Schwarz erhalten wir
+\begin{align*}
+  v^2(x) \leq \_0^1 v'^2
+\end{align*}
+Das ist schon die Friedrich'sche Ungleichung. Sie gilt für alle $v \in H^1_0$.
+\item 2D: $\O = (0, l)^2$ mit der Vorraussetzung $v \in H_0^1 (\O)$
+  \begin{align*}
+    v (x, y) = v(0,y) + \int_0^x v_x(t, y) dt\\
+    v^2 (x, y) \leq l \int_0^l v^2_x(t, y) dt\\
+   \int_\O v^2 \leq l^2 \int_\O v^2_x
+  \end{align*}
+\item allgemeine Friedrich'sche Ungleichung: $\O \subset \R^n$ sei einthalten in eienm Würfel der Kantenlänge $l$. Dann gilt
+  \begin{align*}
+    \norm v _{L^2 (\O) }  \leq l(\int_\O(\nabla v)^2)^{1/2} \quad \forall v \in H^1_0 (\O)
+  \end{align*}
+\end{itemize}
+
+Erste Anwendung: Charakterisierung gewisser Seminormen als äquivalent zu Normen
+\begin{align*}
+H^1: \quad \nnorm v _1^2 &= (v,v) + (\nabla v, \nabla v)\\
+ &= \nnorm v_0^2 + \norm v_1^2
+\end{align*}
+(Seminorm). Folgerung von Friedrichs: Im $H_0^1 (\O)$ sind $\nnorm \cdot _1$ und $\norm \cdot _1$ äquivalente Normen.
+
+\begin{itemize}
+\item $\norm v _1 \leq \nnorm v_1$
+\item $\exists c : \nnorm{v}_1^2 \leq c \norm v _1^2$ ?
+
+$\nnorm{v}_0^2 + \norm v_1^2  \leq c \norm v _1^2$ ?
+
+$\nnorm{v}_0^2 \leq (c-1) \norm v _1^2$ ?
+
+Ja, nach Friedrich'scher Ungleichung für $v \in H^1_0$.
+\end{itemize}
+
+Analog: $H^2: \nnorm v_2^2 = \nnorm v_0^2 + \norm v_1^2 + \norm v_2^2$
+
+$H_0^2 \coloneqq \overline{C_0^\infty}^{H^2}$, $\norm \cdot_2$ ist Norm auf $H_0^2$.
+
+Weitere Ungleichungen vom Poincare-Friedrichs-Typ:
+
+$\O$ besitze einen L-stetigen Rand. 
+
+$\O_1 \subset \O$ sei ein Teilgebiet von $\O$ mit positivem Maß im $\R^n$.
+
+$\Gamma_1 \subset \partial \O$ sei ein Teilrand mit positivem Maß im $\R^{n-1}$.
+Dann gelten die folgenden Ungleichungen für $u \in H^1(\O)$:
+\begin{align*}
+\nnorm u_0^2 \leq c  \left(\norm u_1^2 + \norm{\int_{\O_1} u}^2 \right)\\
+\nnorm u_0^2 \leq c  \left(\norm u_1^2 + \norm{\int_{\Gamma_1} u}^2 \right)
+\end{align*}
+
+(siehe Gajewski, Gröger, Zacharias: 'Nichtlineare Operatorgleichungen', Lemma 1.36)
+
+\begin{definition}
+  $U$ und $V$ seinen normierte Räume. $U$ heißt stetig eingebettet in $V$, wenn $U \subset V$ und eine Konstante $c$ exisitert mit 
+  \begin{align*}
+    \nnorm u_V \leq c \nnorm u_U
+  \end{align*}
+Schreibweise $U \emb V$.
+\end{definition}
+Beispiel: $H^1$ ist stetig eingebettet in $L_2$. 
+$C^{j, \beta} (\bar \O)$: klassisch $j$-mal stetig differentierbar, $j$-te Ableitung $\beta$-hölderstetig ($0 <\beta \leq 1$).
+
+\begin{satz}
+  $\O$ besitze einen L-stetigen Rand, $\O \subset \R^n$. Sei $0 \leq j \leq k$, $1 \leq p < \infty$ und $0<\beta <1$. Dann gilt für
+  \begin{align*}
+    k-j-\beta> \frac{n}{p}
+  \end{align*}
+die Einbettung 
+\begin{align*}
+  W_p^l (\O) \emb C^{j, \beta} (\bar \O).
+\end{align*}
+(Adam: 'Sobolev spaces')
+\end{satz}
+Spezialfälle: 
+\renewcommand{\labelenumi}{(\theenumi)}
+\begin{enumerate}
+\item $p = 2$, $j = 0$: $k -  \beta > n/2$
+
+$n = 1$: $k > 1/2 + \beta \quad$ $H^1$-Funktionen sind stetig. 
+
+$n = 2$: $k > 2/2 + \beta \quad$ $H^2$-Funktionen sind stetig. 
+
+$n = 3$: $k > 3/2 + \beta \quad$ $H^2$-Funktionen sind stetig. 
+\end{enumerate}
+\begin{folgerung}
+  Für $n = 2, 3$ kann man aus zu Funktionen aus dem $H^2(\O)$ normale Interpolierende definieren!
+\end{folgerung}

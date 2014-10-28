@@ -1,0 +1,243 @@
+\section{Finite Elemente}
+
+Elliptische Randwertaufgabe 2. Ordnung: $  V = H^1(\O)$ oder Teilräume
+
+Elliptische Randwertaufgabe 4. Ordnung: $  V = H^2(\O)$ oder Teilräume
+
+Benötigt werden Spline-Räume, die Teilräume von $H^1$ oder $H^2$ sind: Stückweise glatte Funktionen, die global stetig sind, liegen im $H^1$.
+
+schwieriger zu realisieren: stückweise glatt, global $C^1 \Rightarrow H^2$ (insbesondere im 2- und 3-Dimensionalen).
+\subsection{Der eindimensionale Fall}
+ einfachste $C^0$-Splines: Hütchenfunktionen (stetig!)
+
+ \begin{beispiel}
+   FEM mit linearen Splines
+   \begin{align*}
+&     -u'' = f\\
+&u(0) = u(1) = 0\\
+&V_h = \set{\phi_i}_{i = 1, \dots, N-1} \subset H_0^1(0,1)\\
+&x_{i+1}-x_i= h_{i+1}\\
+& a(u,v) = \int_0^1 u'v'\\
+&u_h= \sum_{i = 1}^{N-1}u_i\phi_i\\
+\Rightarrow & u_h(x_i) = u_i
+   \end{align*}
+mit dem Näherungswert $u_j$ für $u(x_i)$ in $x_i$.
+Zu Berechnen:
+\begin{align*}
+ & \int_0^1\phi_i'\phi_j' =
+  \begin{cases}
+    \frac 1{h_i}+ \frac 1{h_{i+1}}& j = i\\
+    -\frac 1{h_i} & j = i-1\\
+    -\frac 1{h_{i+1}} & j = i+1\\
+    0 & \text{sonst}\\
+  \end{cases}
+\\
+&  \int_0^1f \phi_i \dots
+\end{align*}
+Das Ergebnis ist ein tridiagonales Gleichungssystem für $u_i$:
+\begin{align*}
+  -\frac 1{h_i} u_{i-1}+ \left(\frac 1{h_i}+ \frac 1 {h_{i+1}}\right)u_i - \frac 1{h_{i+1}}u_{i+1} = \int_{x_{i-1}}^{x_{i+1}}f \phi_i
+\end{align*}
+ \end{beispiel}
+
+\paragraph{Ausflug: Differenzenverfahren} Einfachstes Differenzenverfahren: Gitter, dann erstetzt man in den Gitterpunkten die Ableitung durch ifferenzenquotienten.
+\begin{beispiel}
+  $-u'' = f$, $u(0)= u(1) = 0$, Differenzenquotient für $u''(x_i)$:
+  \begin{itemize}
+  \item
+    \begin{align*}
+      \left( \frac{u_{i+1}-u_i}{h_{i+1}}- \frac{u_{i}-u_{i-1}}{h_{i}}\right) \approx u''(x_i)
+    \end{align*}
+\item Faktor ?
+\item Taylorentwicklung:
+  \begin{align*}
+    \frac{u(x_i+h_{i+1})-u(x_i)}{h_{i+1}}- \frac{u(x_{i})-u(x_i-h)}{h_{i}}\\
+= u'(x_i) + 0.5 u''(x_i)h_{i+1} + 6^{-1}u'''(x_i)h_{i+1}^2 + \dots - u'(x_i) + 0.5 u''(x_i)h_{i} - 6^{-1}u'''(x_i)h_{i}^2 + \dots -
+  \end{align*}
+  \end{itemize}
+
+  \begin{align*}
+    \frac{2}{h_i + h_{i+1}}\left(\frac{u(x_i + h_{i+1})-u(x_i)}{h_{i+1}}-\frac{u(x_i) - u(x_i-h)}{h_{i}} \right) = u''(x_i) + 3^{-1}u'''(x_i)(h_{i+1}-h_i) + \cO(h_i^2)
+  \end{align*}
+Differenzenverfahren:
+\begin{align*}
+  \frac{2}{h_i + h_{i+1}} = \left( \frac{u_{i+1}-u_i}{h_{i+1}}-\frac{u_i - u_{i-1}}{h_i} \right) = f(x_i)
+\end{align*}
+Mit äquidistantem Gitter:
+\begin{align*}
+  -\frac{u_{i+1}-2 u_i + u_{i-1}}{h^2} = f(x_1)
+\end{align*}
+
+\end{beispiel}
+
+Grundbegriffe bei Differenzenverfahren: Konsisttenz und Stabilität
+
+$Lu = f$ sei stetiges Problem. 
+
+$L_h u_h = f_h$ diskretes Problem mit $u_h$ als Vektor der Näherungswerte in den Gitterpunkten, $L_h$ als Koeffizientenmatrix und dem Vektor $f_h$.
+\begin{definition}
+  Konsistenz der Ordnung $p$ :
+  \begin{align*}
+    \nnorm{L_h r_h u - f_hu} \leq C h^p
+  \end{align*}
+mit der Restriktion $r_h u$ auf dem Gitter ($u$ in den Gitterpunkten).$\nnorm \cdot $ Vektornorm, oft wird die Maximumnorm verwendet, $h = \max h_i$.
+\end{definition}
+In unserem Beispiel mit der diskreten Maximumnorm:
+\begin{align*}
+\nnorm{  L_hr_h u - fu } \leq
+\begin{cases}
+  Ch^2 & \text{ für äquidistantes Gitter}\\
+C\norm{h_{i+1}-h_i} & \text{ sonst}
+\end{cases}
+\end{align*}
+\begin{definition}
+  Stabilität des diskreten Problems:
+
+Für alle Gitterpunkte $v_h$, $w_h$ gilt
+\begin{align*}
+  \nnorm{v_h - w_h} = C \nnorm{L_hv_v - L_hw_h}
+\end{align*}
+\end{definition}
+
+Verschiedenheit von FEM und FDM:
+
+ FEM: diskretes Problem ist stabil, FDM: Stabilität ist nachzuweisen!
+
+ \paragraph{Zurück zu den finiten Elementen:} $C^0$-Elemente höherer Ordnung
+
+Einführung von Hilfsgitterpunkten: $\dots, x_i, x_{i+1}, \dots \Rightarrow \dots, x_i,x_{i+0.5}, x_{i+1}, \dots$
+Lagrangebasis:
+\begin{align*}
+  \phi_i(x_j) = \delta_{ij} 
+\end{align*}
+wobei $i$ und $j$ auch die Hilfsgitterpunkte mit einschließt.
+
+Bisher haben wir \emph{nodale} Basisfunktionen betrachtet. 
+Alternativ kann man \emph{hierarchische} Basen konstruiere. Hierarchische Basis für quadratische $C^0$-Splines: Hutfunktion und 'Melonenhutfunktion' (quatratische Funktion mit Nullstellen bei $x_i$ und $x_{i+1}$).
+
+Allgemeine Konstrunktion einer hierarchischen Basis:
+
+\begin{itemize}
+\item $\frac{1- \xi} 2$, $\frac{1+ \xi} 2$
+\item $h_i = \sqrt{\frac{2i-3} 2} \int_{-1}^\xi L_{i-2}(t)dt$, $3 \leq i \leq p+1$
+
+mit dem Legendrepolynomen $L$, $L_2 (t) = \frac{d^2}{dt^2}\left((t^2-1)^2\right)$ 
+\end{itemize}
+
+\paragraph{$C^1$-Elemente} Oft werden B(Basis)-Splines genutzt:
+
+$t_1<t_2< \dots < t_n$ sei Knotenfolge.
+\begin{align*}
+  N_{0,1} &= x\left[ t_j, t_{j+1}\right] \\
+N_{j,k} (x) &= \frac{x-t_j}{t_{j+k-1}-t_j} N_{j, k-1}(x) + \frac{t_{j+k}-x}{j_{j+k}-t_{j+1}}H_{j+1, k-1}(x) 
+\end{align*}
+Dann gilt
+\begin{itemize}
+\item $\operatorname{supp} N_{j,k} \subset [t_j, t_{j+k}]$
+\item $N_{j,k}> 0$ in $[t_j, t_{j+k}]$
+\item $N_{j,k}$ stückweise polynomiell vom Grade $k-1$
+\item $N_{j,k} \in C^{k-2}$: glatte Splines 
+\end{itemize}
+populär: $k = 3$: kubische $C^1$-Splines
+Literatur: Schwab: $p$ and $hp$ finite element methods.
+\subsection{Der 2-dimensionale Fall}
+$\O \subset \R^2$ sei ein Polygon.
+
+\begin{definition}
+  Eine Zerlegung (Triangulation) $\cT_h$ von $\O$ in polygonale Teilmengen $K_i$heißt \emph{zulässig}, wenn folgende Eigenschaften erfüllt sind:
+  \begin{enumerate}
+  \item $\bigcup K_i = \O$
+  \item Besteht $K_i \cap K_j$ aus einem Punkt, so ist dieser Eckpunkt von $K_i$ und $K_j$.
+  \item Besteht $K_i \cap K_j$ aus mehr als einem Punkt, so ist $K_i \cap K_j$ eine Kante von $K_i$ und $K_j$. 
+  \end{enumerate}
+\end{definition}
+
+%\datum{28. Oktober 2014}
+
+\begin{definition}
+  Ein Tripel $(K, P_K, \Sigma_K)$ heißt \emph{finites Element}. Dabei ist
+  \begin{itemize}
+  \item $P_K$ ein endlichdimensionaler Funktionenraum (meistens Polynome), 
+  \item $\Sigma_K$ eine Menge von Funktionen auf $P_K$.
+  \end{itemize}
+Jedes Element aus $P_K$ soll dabei durch Vorgabe der Werte dieser Funktionale eindeutig bestimmt sein (\emph{Unisolvenz}).
+\end{definition}
+\begin{beispiel}
+  \begin{enumerate}
+  \item Sei $K$ Dreieck, $P_K = \set{1, x, y}$, $\Sigma_K$ Funktionenwerte in den Ecken.
+  \item $K$ sei Dreieck, $P_K= \set{1, x, y}$, $\Sigma_K$: Funktionswerte in den Seitenmittelpunkten
+\item $K$ sei Rechteck, $P_K = \set{1, x, y, xy}$, $\Sigma_K$: Funktionswerte in den Ecken, Unisolvenz klar. 
+\item $K$ sei Rechteck, $P_K = \set{1, x, y, xy}$, $\Sigma_K$: Funktionswerte in den Seitenmittelpunkten, Unisolvenz ist \emph{nicht} gegeben, z.B ist $xy = 0$ für ein Element $E = [-1, 1]^2$ 
+\item $K$ sei Rechteck, $P_K = \set{1, x, y, x^2-y^2}$, $\Sigma_K$: Funktionswerte in den Seitenmittelpunkten.
+
+Nachweis der Unisolvenz:
+\begin{tabular}{c|c|c|c|c}
+
+
+  
+\end{tabular}
+\begin{align*}
+  \begin{vmatrix}
+    1 & 1& 0 &1\\
+1 & -1& 0 & 1\\
+1 & 0& 1 &-1\\
+1 & 0& -1&-1
+  \end{vmatrix} \neq 0 
+\end{align*}
+Daraus folgt Unisolvenz. (Aufgetragen horizontal: $1, x, y, x^2-y^2$, vertikal: $(1,0), (-1, 0), (0,1), (0,-1)$).
+  \end{enumerate}
+\end{beispiel}
+\begin{definition} Finite-Elemente-Raum
+
+Gegeben sei ein finites Element.
+
+Dann definieren wir:
+\begin{align*}
+ v_h \in V_h: v_h|_K \in P_K \; \forall K
+\end{align*}
+Bei gegebenem $V$ heißt $V_h$ konformer Finite-Elemente-Raum, wenn $V_H \subset V$. Zu Prüfen ist dann
+\begin{itemize}
+\item für $V \subset H^1$: ist $v_h \in V_h$ global stetig?
+\item für $V \subset H^2$: ist $v_h \in V_h$ stetig differenzierbar?
+\end{itemize}
+\end{definition}
+
+Wir prüfen die Beispiele (hinsichtlich $V = H^1$) auf Konformität:
+\begin{enumerate}
+\item Für zwei benachbarte Dreiecke $K$ und $K'$: $v_h|_{K \cap K'}$ ist lineare Funktion einer Variablen, diese ist eindeutig bestimmt $\to$ Stetigkeit.
+
+Das sind konforme lineare Elemente, Raum \emph{$P_1$}.
+\item Zwei benachbarte Dreiecke $K$ und $K'$: nichtkonformes lineares Element (\emph{Crouzeix-Raviart-Element})
+\item Zwei benachbarte Rechtecke $K$ und $K'$: wie bei (1): konforme bilineare finite Elemente, Raum \emph{$Q_1$}
+\setcounter{enumi}{4}
+\item nichtkonformes Element (Rannacher-Turek)
+\end{enumerate}
+
+Erhöhung des Polynomgrades bei Reckteckelementen:
+
+Fall $Q_2$: $P_K = \set{x^{\alpha_1}y^{\alpha_2}, 0 \leq \alpha_1, \alpha_2 \leq 2}$, $\dim P_K = 9$
+
+Fall $Q_3$: $P_K = \set{x^{\alpha_1}y^{\alpha_2}, 0 \leq \alpha_1, \alpha_2 \leq 3}$, $\dim P_K = 16$
+
+und so weiter \dots
+
+Manchmal reduziert man die inneren Freiheitsgrade, zum Beispiel:
+
+\begin{beispiel}
+  $Q_2'$ mit Punkten an den Elementecken (Elemente: Recktecke). 
+
+$P_K = \set{\text{alle nodalen Basisfunktionen wie in }Q_2\text{ mit Ausnahme der Basisfunktion zu dem inneren Punkt}}$
+\end{beispiel}
+Manchmal favorisiert man andere Freiheitsgrade
+\begin{beispiel}
+  Elemente: Rechtecke, $P_k = \set{x^{\alpha_1}y^{\alpha_2}, 0 \leq \alpha_1, \alpha_2 \leq 2}$, $\dim P_K = 9$
+Freiheitsgrade:
+\begin{itemize}
+\item Funktionswerte in Ecken (4)
+\item Integrale über Randkanten (4)
+\item Interpolation üder Elemente
+\end{itemize}
+\end{beispiel}
+Neuer Finite-Elemente-Raum: $Q_2^*$
+
+\paragraph{Erhöhung des Polynomgrades bei Dreieckelementen}

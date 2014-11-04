@@ -26,14 +26,23 @@
 \newcommand{\anstrichVariante}{$\square$ \text{ }}
 
 \newtheorem{satz}{\anstrich Satz}[section] 
+\newtheorem*{satz*}{\anstrich Satz} 
 \newtheorem{lemma}[satz]{\anstrich Lemma}
+\newtheorem*{lemma*}{\anstrich Lemma}
 \newtheorem{proposition}[satz]{\anstrich Proposition}
+\newtheorem*{proposition*}{\anstrich Proposition}
 \newtheorem{definition}[satz]{\anstrich Definition}
+\newtheorem*{definition*}{\anstrich Definition}
 \newtheorem{beispiel}[satz]{\anstrich Beispiel}
+\newtheorem*{beispiel*}{\anstrich Beispiel}
 \newtheorem{uebung}[satz]{Aufgabe}
 \newtheorem*{uebung*}{Aufgabe}
 \newtheorem{folgerung}[satz]{Folgerung}
+\newtheorem*{folgerung*}{Folgerung}
 \newtheorem{bemerkung}[satz]{\anstrich Bemerkung}
+\newtheorem*{bemerkung*}{\anstrich Bemerkung}
+\newtheorem{algorithmus}[satz]{\anstrich Algorithmus}
+\newtheorem*{algorithmus*}{\anstrich Algorithmus}
 \newenvironment{beweis}{\begin{proof}[Beweis]}{\end{proof}}  
 \newenvironment{beweisidee}{\begin{proof}[Beweisidee]}{\end{proof}}
 
@@ -106,21 +115,24 @@
 \newcommand{\Graph}{\operatorname{Graph}}
 \renewcommand{\div}{\operatorname{div}}
 \newcommand{\id}{\operatorname{id}}
+\newcommand{\diam}{\operatorname{diam}}
+\newcommand{\inner}{\operatorname{int}}
 
 % Abkürzungen
 
 \newcommand{\eps}{\varepsilon}
 \renewcommand{\O}{\Omega}
 \renewcommand{\phi}{\varphi}
-
+\renewcommand{\l}{\lambda}
 
 % FEM
 \newcommand{\emb}{\hookrightarrow} % embedded (eingebettet)
 \newcommand{\esssup}{\operatorname{ess\;sup}}
+\newcommand{\supp}{\operatorname{supp}}
 
 % Things for equations  
 \numberwithin{equation}{section}
 \setcounter{subsection}{0}
 \setcounter{satz}{0}
 
-%\renewcommand{\labelenumi}{(\alph{enumi})}
+%\renewcommand{\labelenumi}{(\alph{enumi})}u

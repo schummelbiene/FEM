@@ -1,0 +1,257 @@
+\section{Konvergenzanalysis}
+\subsection{Differenzenverfahren und $M$-Matrizen}
+\begin{align*}
+  L u = f
+\end{align*}
+sei das stetige Problem, 
+\begin{align*}
+  L_h u_h = f_h 
+\end{align*}
+sei das diskrete Problen mit der Gitterfunktion $u_h$.
+
+Konsistenz der Ordnung $p$: $\nnorm{L_h r_h u -f_h} \leq C_k h^p$
+
+Stabilität des diskreten Problems: $\nnorm{v_h - w_h} \leq C_s \nnorm{L_h u_h - L_h w_h}$ für alle Gitterfunktionen $v_h, w_h$. Das ist genau dann der Fall, wenn $\nnorm{L_h^{-1}} \leq C_s$.
+
+Aus Konsistenz der Ordnung $p$ und Stabilität folgt Konvergenz der Ordnung $p$, das heißt
+\begin{align*}
+  \nnorm{r_h u - u_h} \leq Ch^p
+\end{align*}
+\begin{beweis}
+  \begin{align*}
+    \nnorm{r_h u - u_h} &\leq \nnorm C_s{L_h r_h u - L_h u_h} \\
+&= C_s \nnorm{L_h r_h u - f_u} \\
+&\leq C_s C_k h^p
+  \end{align*}
+\end{beweis}
+
+Nachweis der Konsistenz: üblich sind Taylorentwicklungen (verlangt Glattheit der Lösung).
+
+Der Nachweis der Stabilität ist schwierig. Hilfsmittel sind 
+\begin{itemize}
+\item inversmonotone Matrizen, insbesondere $M$-Matrizen, falls $\nnorm \cdot$ die Maximumsnorm ist
+\item diskrete Fouriertransformation, falls $\nnorm \cdot$ die diskrete $L^2$-Norm ist
+\item diskrete $H^1$-Normen (verwandt zur FE-Analysis)
+\end{itemize}
+Zu den ersten beiden Punkten: Großmann, Roos, Kapitel 2.
+
+Nun zum ersten Punkt: Sei $A$ eine $n \times n$-Matrix.
+\begin{definition}
+\renewcommand{\labelenumi}{(\roman{enumi})}
+  \begin{enumerate}
+  \item Wenn $A^{-1}$ exisitert und $A^{-1} \geq 0$ ist, so heißt $A$ \emph{inversmonoton}. 
+\item Es gelte $a_{ij} \leq 0$ für $i \neq j$ und $A^{-1} \geq 0$. Dann heißt $A$ \emph{M-Matrix}.
+\item $A$ heißt \emph{streng diagonal dominant}, wenn $\norm{a_{ii}}> \sum_{j \neq j} \norm {a_{i,j}}$.
+
+$A$ heißt \emph{(schwach) diagonal dominant}, falls $\norm{a_{ii}} \geq \sum_{j \neq j} \norm {a_{i,j}}$ und für mindestens ein $i$ gelte $\norm \dots > \dots$.
+
+\begin{beispiel*}
+  $-u'' = f$, $u(0) = u(1) = 0$ mit Differenzenverfahren:
+  \begin{align*}
+    \begin{pmatrix}
+      2 &-1 & & & & \\ 
+      -1 &2 &-1  & & & \\ 
+       & & \ddots & & & \\ 
+       & & &-1 &2 &-1 \\ 
+       & & & &-1 &2 \\ 
+    \end{pmatrix}
+  \end{align*}
+ist schwach diagonal dominant.
+\end{beispiel*}
+
+\item $A$ heißt reduzibel $\Leftrightarrow$  es gibt $N_1, N_2 \subset \set{1, \dots, n}$, mit $N_1 \cup N_2 = \set{1, \dots, n}$, $N_1 \cap N_2 = \emptyset$ mit $a_{ij} = 0$ für $i \in N_1$ und $j  \in N_2$. Ist $A$ nicht reduzibel, so heißt $A$ \emph{irreduzibel}.
+  \begin{beispiel*}
+    \begin{align*}
+      \begin{pmatrix}
+        \cdot & 0&0\\
+0 &\cdot &\cdot\\
+0 &\cdot &\cdot
+      \end{pmatrix}
+    \end{align*}
+ist irreduzibel.
+  \end{beispiel*}
+  \end{enumerate}
+\end{definition}
+\begin{satz}
+\renewcommand{\labelenumi}{(\roman{enumi})}
+  $A$ sei eine $n \times n$-Matrix mit $a_{ij} \leq 0$ für $i \neq j$.
+  \begin{enumerate}
+  \item Ist $A$ streng  diagonal dominant, so ist $A$ M-Matrix.
+  \item Ist $A$ schwach diagonal dominant, und irreduzibel, so ist $A$ M-Matrix.
+\item M-Kriterium: $A$ ist genau dann M-Matrix, wenn ein Vektor $e > 0$ exisitert, mit $Ae > 0$. Zudem gilt: 
+  \begin{align}\label{eq:mkrit}
+    \nnorm{A^{-1}}_\infty \leq \frac{\nnorm e _\infty}{\min(Ae)}
+  \end{align}
+  \end{enumerate}
+
+Beweis: Übung und GR 2.7
+\end{satz}
+Nachweis von \eqref{eq:mkrit}: Aus $A^{-1} \geq 0$ folgt 
+\begin{align*}
+  \nnorm{A^{-1}}_\infty = \nnorm{A^{-1}(1, \dots, 1)^T}_\infty
+\end{align*}
+Nun folgt aus 
+\begin{align*}
+& Ae \geq \min(Ae) (1, \dots, 1)^T\\
+&A^{-1} (1, \dots, 1)^T \leq \frac e {\min (Ae)}\\
+\Rightarrow  \quad&\nnorm{A^{-1}}_\infty \leq \frac{\nnorm e _\infty}{\min(Ae)}
+\end{align*}
+
+\eqref{eq:mkrit} gilt auch für inversmonotone Matrizen, falls es $e > 0$ gibt mit $Ae > 0$.
+
+\begin{beispiel} Anwendung:
+
+  \begin{align*}
+    - \Delta u + u = f\\
+u|_{\partial \O} = 0
+  \end{align*}
+im Einheitsquadrat. Wir verwenden das Differenzenverfahren. Gestalt von $A$:  
+\begin{align*}
+  \begin{pmatrix}
+    1 + \frac 4 {h^2} & - \frac 1 {h^2} & - \frac 1 {h^2} & 0 & 0 & \dots \\
+- \frac 1 {h^2} & 1 + \frac 4 {h^2} & - \frac 1 {h^2} & - \frac 1 {h^2} & 0 &  \dots \\
+- \frac 1 {h^2} &- \frac 1 {h^2} & 1 + \frac 4 {h^2} & - \frac 1 {h^2} & - \frac 1 {h^2}  &  \dots \\
+ & & & \vdots
+  \end{pmatrix}
+\end{align*}
+Ist $a_{ij} \leq 0$ für $i \neq j$ und $A$ streng diagonal dominant, dann M-Matrix und mit $e = (1, \dots, 1)^T$ folgt $Ae \geq 1$.
+\end{beispiel}
+
+%\datum{04. November 2014}
+
+Literatur zu M-Matrizen: 'A survey on M-matrices' SIAM review 1974
+
+\begin{beispiel}
+  \begin{align*}
+&    -\Delta u = f\\
+& u|_{\partial \O} = 0
+  \end{align*}
+auf $ \O = (0,1)^n$. Der daraus resultierende Differenzenstern hat eine Koeffizientenmatrix mit $a_{ij} \leq 0$, $i \neq j$ schwach diagonaldominant und irreduzibel, also eine M-Matrix.
+
+im Eindimensionalen: $-u'' = f, u(0) = u(1) = 0$. Wir suchen zunächst eine Funktion $e(x)$ mit $e(x)>0$ in $(0,1)$ und $-e''>0$, zum Beispiel $e(x) = x(1-x)$.
+
+Man kann $e$ auch in Abhängigkeit vom Gitter erzeugen.
+\begin{align*}
+  Ae = 2,
+\end{align*} 
+denn quadratische Funktionen werden exakt diskretisiert.
+
+Im Zweidimensionalen: Analog. $\nnorm{A^{-1}} \leq \frac{\frac 1 4}{2} = \frac 1 8$. 
+
+Folgerung für den Fehler des Differenzenverfahrens:
+\begin{align*}
+  \norm{u(x_i, y_i)-u_{ij}}\leq \frac 1 8 C_k h^2 \max \norm{u^{(4)}}
+\end{align*}
+(alle vierten Ableitungen die man so kriegt).
+
+Bemerkungen
+\begin{itemize}
+\item hinreichend ist auch, dass die 3. Ableitungen lipschitzstetig sind, aber im Allgemeinen liegt die Lösung des Problems nicht in $C^2(\O)$.
+\item Bei beliebiger Zerlegung ist der Konsistenzfehler nur von erster Ordnung (gemessen in Maximuns-Norm). Trotzdem ist der Fehler von der Ordnung 2. Der Beweis ist schwieriger.
+
+Stabiliät: $\nnorm{v_h -w_h} \leq C_s \nnnorm{L_hv_h - L_hw_h}$ mit zum Beispiel: $\nnorm{\cdot}$ Maximumnorm und $\nnnorm{\cdot}$ schwächere Norm
+\end{itemize}
+\end{beispiel}
+\begin{beispiel}
+  \begin{align*}
+&    -\Delta u + b_1 u_x + b_2 u_y + cu = f \\
+&u|_{\partial \O} = 0
+  \end{align*}
+im Einheitsquadrat mit der Vorraussetzung $c \geq 0$. Mit dem gewönlichen Differenzenverfahren erhalten wir den Differenzenstern
+\begin{align*}
+  \begin{pmatrix}
+    & - \frac 1{h^2} + \frac {b_2}{2h} &\\ 
+     - \frac 1{h^2} - \frac {b_1}{2h}     & \frac  4{h^2} + c& - \frac 1{h^2} + \frac {b_1}{2h} \\  
+    & - \frac 1{h^2} - \frac {b_2}{2h} &
+  \end{pmatrix}
+\end{align*}
+Gilt $a_{ij} \leq 0$ für alle $i \neq j$? Ja, für $h\leq h_0$.
+Nun gilt 
+\begin{align*}
+  A = A_0 + A_1
+\end{align*}
+und $A_0 $ werden die Beiträge von $-\Delta u$ zugeordnet ($-\frac \cdot {h^2}$)
+
+%Sätzchen: $B$ regulär, $\nnorm{B^-1} \leq \alpha$, $\nnorm{B^{-1}} \nnorm{C-B}\leq \beta <1$. Dann ist $C$ regulär und $\nnorm{C^{-1}}\leq \frac {\alpha}{1- \beta}$.
+
+\end{beispiel}
+\begin{beispiel}
+  Zum singulär gestörten Fall: 
+
+Im Eindimensionalen:
+\begin{align*}
+&  - \eps u'' + b_1 u' + cu = f\\
+&u(0) = u(1) = 0 
+\end{align*}
+mit den Vorraussetzungen $c \geq 0, b_1> 0$.
+... Wir erhalten inakzeptabel kleine Schrittweiten.
+
+Ausweg: upwind-Verfahren
+\begin{align*}
+  u'(x_i) \approx \frac{u_{i+1}- u_{i-1}}{2h}
+\end{align*} (zentraler Differenzenquotient)
+\begin{align*}
+  u'(x_i) \approx \frac{u_{i}- u_{i-1}}{h}
+\end{align*} (einseitiger Differenzenquotient)
+mit der Koeffizientenmatrix
+\begin{align*}
+  \begin{matrix}
+    -\frac \eps{h^2} - \frac {b_1} h &     -\frac {2\eps}{h^2} + \frac {b_1} h +c&     -\frac \eps{h^2} 
+  \end{matrix} \quad a_{ij} \leq 0, i \neq j
+\end{align*}
+Das ergibt eine M-Matrix. Wahl: $e(x) = x$, $- \eps e'' + b_1e' + ce = b_1 + c \geq \min b_1$
+Für Stabilität also $\nnorm{A^{-1} } \leq \frac 1 {\min b_1}$.
+
+Vorteil des upwind-Verfahrens: Stabilität, Nachteil: nur erste Ordnung
+\end{beispiel}
+
+Nachteil von M-Matrizen: Kaum anwendbar bei größeren Differnzensternen, zum Beispiel
+\begin{align*}
+  - u''(x_i) \approx \frac 1 {12} \frac 1 {h^2}(u_{i-2}-16u_{i-1} + 30 u_i - 16 u_{i+1} + u_{i+2})
+\end{align*}
+mit positiven Nichtdiagonaleinträgen. Literatur: J.Lorenz (Münster, 1975) 'Die Inversenmonotonie von Matrizen und ihre Anwendungen beim Stabilitätsnachweis von Differenzenverfahren'.
+
+Erzeugen gewisse FE-Diskretisierungen M-Matrizen? Wir betrachten lineare finite Elemente einer beliebigen Triangulation und untersuchen die Diskretisierung von $- \Delta u$. Ein Element sei $K$ mit den Ecken $i, j, k$. Zu berechnen ist 
+\begin{align*}
+  \int_k (\nabla \phi_\alpha) (\nabla \phi_\beta)
+\end{align*}
+mit $\alpha, beta \in \set{i, j, k}$. Transformation auf Referenzdreieck $E$ mit den Ecken $(0,0),(0,1), (1, 0)$ und Koordinaten $\xi, \eta$: 
+\begin{align*}
+  & x = x_i + (x_j - x_i)\xi + (x_k - x_i) \eta\\
+  & y = y_i + (y_j - y_i)\xi + (y_k - y_i) \eta
+\end{align*}
+Funktionaldeterminante:
+\begin{align*}
+  \begin{vmatrix}
+    x_\xi & x_\eta\\
+y_\xi & y_\eta
+  \end{vmatrix} = 2 \norm K
+\end{align*}
+Umrechnung der Ableitungen
+\begin{align*}
+&  w_x = w_\xi \xi_x + w_\eta\eta_x\\
+&  w_y = w_\xi \xi_y + w_\eta\eta_y
+\end{align*}
+Nun gilt zum Beispiel $\xi_x = \frac {y_{ki}}{2 \norm K}$, $\eta_x = \frac {-y_{ji}}{2 \norm K}$, zum Beispiel $y_{ki} = y_k - y_i$
+Man erhält 
+\begin{align*}
+&  \int_K \frac{\partial \phi_j}{\partial x} \frac{\partial \phi_k}{\partial x} + \frac{\partial \phi_j}{\partial y} \frac{\partial \phi_k}{\partial y} =\\
+& \frac{2 \norm{K}}{4 \norm K}^2 \int_E \left( \frac{\partial \tilde \phi_j}{\partial \xi} y_{ki} + \frac{\partial \tilde \phi_j}{\partial \eta} y_{ij} \right)\left( \frac{\partial \tilde \phi_k}{\partial \xi} y_{ki} + \frac{\partial \tilde \phi_k}{\partial \eta} y_{ij} \right) +
+\left( \frac{\partial \tilde \phi_j}{\partial \xi} x_{ik} + \frac{\partial \tilde \phi_j}{\partial \eta} x_{ji} \right)\left( \frac{\partial \tilde \phi_k}{\partial \xi} x_{ik} + \frac{\partial \tilde \phi_k}{\partial \eta} y_{ji} \right)
+\end{align*}
+mit den transformierten Basisfunktionen $\tilde \phi_j = \xi$ und $\tilde \phi_k = \eta$ folgt
+\begin{align}\label{eq:xy}
+   = \frac 1 {4 \norm K}(y_{ki}y_{ij} + x_{ik} x_{ji}).
+\end{align}
+Was bedeutet \eqref{eq:xy} geometrisch? $a_{jk} = - \frac 1 2 \cot \gamma$
+
+\begin{align*}
+  \alpha_i u_i + \sum_{j \in \Lambda_i}\beta_{ij}u_j = \int_\O f \phi_i
+\end{align*}
+\begin{itemize}
+\item $   \Lambda_i $ Nachbarknoten zu $P_i$
+\item $\beta_{ij} = - \frac 1 2(\cot \gamma_{ij}^1 + \cot \gamma_{ij}^2)$
+\item $\alpha_i + \sum_j \beta_{ij} = 0$ 
+\end{itemize}
+und $\gamma_1, \gamma_2$ Winkel an den von $k$ und $j$ abgewandten Seiten.
+

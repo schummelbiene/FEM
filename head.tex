@@ -39,6 +39,10 @@
 \newtheorem*{uebung*}{Aufgabe}
 \newtheorem{folgerung}[satz]{Folgerung}
 \newtheorem*{folgerung*}{Folgerung}
+\newtheorem{korollar}[satz]{Korollar}
+\newtheorem*{korollar*}{Korollar}
+\newtheorem{theorem}[satz]{Theorem}
+\newtheorem*{theorem*}{Theorem}
 \newtheorem{bemerkung}[satz]{\anstrich Bemerkung}
 \newtheorem*{bemerkung*}{\anstrich Bemerkung}
 \newtheorem{algorithmus}[satz]{\anstrich Algorithmus}
@@ -49,7 +53,10 @@
 \newcommand{\markdef}[1]{\textbf{#1}}  
 \newcommand{\norm}[1]{\ensuremath{|#1|}}
 \newcommand{\nnorm}[1]{\ensuremath{\|#1\|}}
+\newcommand{\nnnorm}[1]{\ensuremath{\||#1\||}}
 \newcommand{\set}[1]{\left\{ #1 \right\}}
+\newcommand{\abl}[2]{\frac{\partial #1}{\partial #2}}
+
 
 % Angestrichene Großbuchstaben
 \newcommand{\A}{\mathbb{A}}
@@ -57,7 +64,7 @@
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\D}{\mathbb{D}}
 \newcommand{\E}{\mathbb{E}}
-\newcommand{\F}{\mathbb{F}}   %verkürzte Schreibweise der Zahlbereiche 
+\newcommand{\F}{\mathbb{F}}   
 \newcommand{\G}{\mathbb{G}}
 \renewcommand{\H}{\mathbb{H}}
 \newcommand{\I}{\mathbb{I}}
@@ -135,4 +142,4 @@
 \setcounter{subsection}{0}
 \setcounter{satz}{0}
 
-%\renewcommand{\labelenumi}{(\alph{enumi})}u
+%\renewcommand{\labelenumi}{(\alph{enumi})}

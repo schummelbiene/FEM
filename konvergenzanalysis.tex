@@ -41,7 +41,7 @@ Nun zum ersten Punkt: Sei $A$ eine $n \times n$-Matrix.
   \begin{enumerate}
   \item Wenn $A^{-1}$ exisitert und $A^{-1} \geq 0$ ist, so heißt $A$ \emph{inversmonoton}. 
 \item Es gelte $a_{ij} \leq 0$ für $i \neq j$ und $A^{-1} \geq 0$. Dann heißt $A$ \emph{M-Matrix}.
-\item $A$ heißt \emph{streng diagonal dominant}, wenn $\norm{a_{ii}}> \sum_{j \neq j} \norm {a_{i,j}}$.
+\item $A$ heißt \emph{streng diagonal dominant}, wenn $\norm{a_{ii}}> \sum_{j \neq i} \norm {a_{i,j}}$.
 
 $A$ heißt \emph{(schwach) diagonal dominant}, falls $\norm{a_{ii}} \geq \sum_{j \neq j} \norm {a_{i,j}}$ und für mindestens ein $i$ gelte $\norm \dots > \dots$.
 
@@ -100,7 +100,6 @@ Nun folgt aus
 \eqref{eq:mkrit} gilt auch für inversmonotone Matrizen, falls es $e > 0$ gibt mit $Ae > 0$.
 
 \begin{beispiel} Anwendung:
-
   \begin{align*}
     - \Delta u + u = f\\
 u|_{\partial \O} = 0
@@ -123,8 +122,8 @@ Literatur zu M-Matrizen: 'A survey on M-matrices' SIAM review 1974
 
 \begin{beispiel}
   \begin{align*}
-&    -\Delta u = f\\
-& u|_{\partial \O} = 0
+    -\Delta u &= f\\
+ u|_{\partial \O} &= 0
   \end{align*}
 auf $ \O = (0,1)^n$. Der daraus resultierende Differenzenstern hat eine Koeffizientenmatrix mit $a_{ij} \leq 0$, $i \neq j$ schwach diagonaldominant und irreduzibel, also eine M-Matrix.
 
@@ -253,5 +252,505 @@ Was bedeutet \eqref{eq:xy} geometrisch? $a_{jk} = - \frac 1 2 \cot \gamma$
 \item $\beta_{ij} = - \frac 1 2(\cot \gamma_{ij}^1 + \cot \gamma_{ij}^2)$
 \item $\alpha_i + \sum_j \beta_{ij} = 0$ 
 \end{itemize}
-und $\gamma_1, \gamma_2$ Winkel an den von $k$ und $j$ abgewandten Seiten.
+und $\gamma_1, \gamma_2$ Winkel an den von $k$ und $j$ abgewandten Seit
+en.
 
+%\datum{06. November 2014}
+\paragraph{Nachtrag:} Stabilität des Differenzenverfahrens für
+\begin{align*}
+  - u''+ b u' + cu &= f\\
+u(0) = u(1) &= 0
+\end{align*} 
+für $c \geq 0$.
+\begin{itemize}
+\item $e >0$: $Le> 0$ in $(0,1)$
+
+Versuch: 
+\begin{align*}
+&  e = e^\alpha - e^{\alpha x}\\
+&  Le = (\alpha^2 - b \alpha + c) e^{\alpha x} \geq \frac{\alpha^2}2 
+\end{align*}
+für entsprechendes $\alpha$
+\item Diskreter Operator $L_h$, 
+  \begin{align*}
+    L_h r_h e = Le + \text{ Konsistenzfehler } \geq \frac{\alpha^2} 4 
+  \end{align*}
+für $h \leq h_0$. Daraus folgt
+\begin{align*}
+  \nnorm{L_h^{-1}} \leq \frac{e^\alpha-1}{\frac {\alpha^2} 4}
+\end{align*}
+\end{itemize}
+
+Zurück:  Betrachte$- \Delta u = f$ in $\O \subset \R^2$ mit polygonalem $\O$ und $u = 0$ auf $\partial \O$. Entsteht eine M-Matrix, wenn wir  finiter Elemente anwenden?
+Betrachte den Punkt $i$ mit Nachbargitterpunkten und $j \in \Lambda_i$. Die $i$-te Gleichung lautet dann
+\begin{align*}
+  \alpha_i u_i + \sum_{j \in \Lambda_i} \beta_{ij}u_j = \int_{\O_i} f \phi_i
+\end{align*}
+mit
+\begin{align*}
+&  \beta_{ij} = -\frac 1 2 \left( \cot\gamma_{ij}^1 + \cot \gamma_{ij}^2\right)\\
+&\alpha_i + \sum_j \beta_{ij} = 0
+\end{align*}
+und $\gamma_{ij}^1$ dem Winkel des oberen Dreiecks, das an $i$ und $j$ liegt und der weder an $i$ noch an $j$ liegt ($\gamma_{ij}^2$ unteres Dreieck analog).
+\begin{beispiel*}
+  Fünfpunktestern für Friedrichs-Keller-Gitter
+\end{beispiel*}
+Ergibt das eine M-Matrix?
+\begin{align*}
+  \cot \gamma^1 + cot \gamma^2 = \frac {\cos \gamma ^1}{\sin \gamma^1} + \frac {\cos \gamma ^2}{\sin \gamma^2} = \frac {\sin(\gamma^1 + \gamma^2)}{\sin \gamma^1 \sin \gamma^2}, 
+\end{align*}
+also: \begin{center}
+\framebox{
+Aus $\gamma^1 + \gamma^2 < \pi$ folgt $\beta_{ij}< 0$ für $i \neq j$.}
+\end{center}
+Das ist genau dann der Fall, wenn kein Punkt unserer Triangulation im inneren des Umkreises eines Dreiecks der Triangulation liegt (geometrische Interpretation). Das nennt man dann \emph{Delaunay-Triangulation}. 
+
+Man kann zeigen: Eine Delaunay-Triangulation besitzt die Eigenschaft, dass der minimale Winkel der Triangulation maximiert wird. Bei $N$ Punkten ist der Aufwand eines entsprechenden Algorithmus $\cO(N \ln N)$. 
+
+Ist die Triangulation eine  Delaunay-Triangulation und eine gewisse Zusammenhangsbedingung erfüllt, wird eine M-Matrix erzeugt. 
+
+\emph{Zusammenhangsbedingung}: Es gibt einen Weg im Inneren, der zwei beliebige Knoten verbindet.
+
+\begin{bemerkung}
+  Betrachtet man allgemeinere Differenzialoperatoren, so ist es nicht so einfach, mit finiten Elementen die M-Matrix-Eigenschaft zu konservieren. 
+\end{bemerkung}
+
+\begin{beispiel} 
+\renewcommand{\labelenumi}{(\alph{enumi})}
+\begin{enumerate}
+   Betrachte Friedrichs-Keller-Triangulation und Finite Elemente 
+\item 
+  \begin{align*}
+&    - \Delta u + u = f\\
+&    u|_{\partial \O} = 0
+  \end{align*}
+und schwache Form
+\begin{align*}
+  (\nabla \phi_j), \nabla \phi_j) + (\phi_i, \phi_j) = \dots
+\end{align*}
+$- \Delta u$ erzeugt den 5-Punkte Differenzenstern
+\begin{align*}
+  \begin{matrix}
+    & -1 & \\
+-1 & 5 & -1\\
+    & -1 & .
+  \end{matrix}
+\end{align*}
+$ u$ erzeugt den Beitrag
+\begin{align*}
+  \begin{matrix}
+    \cdot & \cdot &\cdot  \\
+\cdot  & \cdot  & \cdot \\
+    \cdot & \cdot  & \cdot 
+  \end{matrix}
+\end{align*}
+mit ausschließlich positiven Einträgen. Das wird schwer eine M-Matrix geben \dots
+\item
+\begin{align*}
+&    - \Delta u + b_1u_x + b_2u_y = f\\
+&    u|_{\partial \O} = 0  
+\end{align*}
+und Konstanten $b_1$, $b_2$.
+\begin{align*}
+  \begin{pmatrix}
+    & -1 & \\
+-1 & 5 &-1\\
+    & -1 & \\
+  \end{pmatrix} + b_1 
+  \begin{pmatrix}
+    & -1 &1 \\
+-2 &  &2\\
+  -1  & 1& \\
+  \end{pmatrix} + b_2
+  \begin{pmatrix}
+    & 2 & 1\\
+1 &  &-1\\
+   -1 & -2 & \\
+  \end{pmatrix}
+\end{align*}
+Ähnlich gelagerter Fall. Es gibt aber Auswege, auch wenn es ein bisschen tricky ist. 
+\end{enumerate}
+\end{beispiel}
+\subsection{Konvergenzanalysis für FEM}
+Betrachte eine RWA zweiter Ordnung und die zugehörige Variationsgleichung (V). Die Vorraussetzungen des Lax-Milgram-Lemmas seien erfüllt. 
+Hinzu werde der FE-Raum $V_h \subset V$ genommen.
+Nach dem Cea-Lemma gilt für den Approximationsfehler:
+\begin{align*}
+  \nnorm{u - u_h} \leq C \inf_{v_h \in V_h} \nnorm{u - v_h}
+\end{align*}
+
+In der Approximationstheorie: $u \in V$, einem normierten Raum und einem Teilraum $M$: Gesucht ist ein $u_0 \in M$ mit $\nnorm{u- u_0} \to \min$.
+
+Falls $M$ endlichdimensional ist, gibt es ein eindeutiges $u_0$ bei strikt konvexer Norm (wie in Hilbert-Räumen). 
+In Hilberträumen gilt dann: 
+\begin{align}\label{eq:gal_orth}
+  (u-u_0, v) = 0 \qquad \forall v \in M.
+\end{align}
+Im $H^1$ ist die Berechnung der Bestapproximation genauso schwierig wie das Lösen von $- \Delta u_0 + u_0 = u$. 
+
+Deswegen Ausweg: Versuch, Fehlerabschätzungen zu gewinnen aus 
+\begin{align*}
+  \nnorm{u-u_h} \leq C \nnorm{u - \Pi u},
+\end{align*}
+$\Pi u \in V_h$ geeignet gewählt.
+\begin{beispiel} aus Hämmerlin/Hoffmann (netter Teil über Splines btw.)
+
+im Eindimensionalen: lineare Splines
+\begin{align*}
+  \nnorm{f - f^I}_\infty \leq 2 \min_{s \in S_1}\nnorm{f- s}_\infty
+\end{align*}
+mit der linearen Interpolierenden $f^I$ und linearen Splines $S_1$.  
+\begin{align*}
+  \nnorm{f - \pi f}_\infty \leq 4 \min_{s \in S_1}\nnorm{f - s}_\infty
+\end{align*}
+mit den $L_2$-Projektionen $\pi f$ auf $S_1$.
+Das ist nicht allzu schlecht. 
+\end{beispiel}
+\begin{beispiel} Pobrowolski, ZAMM, 1991
+  \begin{align*}
+    &- \Delta u = f\\
+    & \O = (0,1)^2
+  \end{align*}
+mit bilinearen Finiten Elementen und einer gleichmäßigen Zerlegung in Quadrate
+\begin{align*}
+  c_I = \sup \frac{\nnorm{\nabla (u- u^I)}_0}{\nnorm u_2} h^{-1}
+\end{align*}
+mit der bilinear Interpolierenden $u^I$ von $u$ ($u \in H^2$ vorrausgesetzt)
+\begin{align*}
+  c = \sup \frac{\nnorm{\nabla (u- u_h)}_0}{\nnorm u_2} h^{-1}
+\end{align*}
+mit der FE-Lösung $u_h$. Es gilt $u_I = U = \frac 1 \pi$. 
+Hier wird gar nichts verloren. 
+\end{beispiel}
+Wie wird $\Pi u \in V_h$ gewählt? 
+\begin{itemize}
+\item Standard: Interpolierende $C$ ($u \in H^2$ muss man dann vorraussetzen)
+\item manchmal: $L_2$-Projektionen in $V_h$
+\item manchmal: verallgemeinerte Interpolierende, zum Beispiel Clemént, Scott-Zhang
+\end{itemize}
+Wie schätzt man $\nnorm{u- \Pi u}$ ab? ($\Pi$ sei Projektion in $V_h$, zum Beispiel eine Interpolierende)
+
+\begin{enumerate}
+\item abzuschätzen: Integral über ein Element $K$ der Zerlegung
+ Transformation auf Referenzelement $E$
+\item  Abschätzung auf Referenzelement unter Zuhilfenahme des Bramble-Hilbert-Lemmas oder ähnliches
+\item  Trausformation zurück auf $K$
+\end{enumerate}
+\begin{beispiel}
+  $K$ sei rechtwinkliges Dreieck mit rechtem Winkel an der Ecke $(x_0, y_o)$ und anderen Ecken $x_0 + h$, $y_0 + h$. Wir verwenden lineare finite Elemente. Es ist abzuschätzen $\norm{u - u^I}_{1, K}$ und $u^I = \sum u (P_i)\phi_i$. Referenzelement sei $E$ mit Ecken $(0,0), (0,1), (1,0)$.
+  \begin{itemize}
+  \item Transformation: $\xi = \frac {x - x_0} h$, $\eta = \frac {y - y_0} h$, zum Beispiel
+    \begin{align*}
+      \int_K (u-u^I)^2_x = 2 \norm K \frac 1 {h^2} \int_E(u-u^I)_\xi^2
+    \end{align*}
+\item Referenzelemt: Elementare Rechnung liefert
+  \begin{align*}
+    \int_E (u-u^I)_\xi^2 \leq  c\int_E (u_{\xi \xi}^2 -u_{\xi\eta}^2) 
+  \end{align*}
+\item Rücktransformation 
+  \begin{align*}
+     c\int_E (u_{\xi \xi}^2 -u_{\xi\eta}^2) = \frac 1 {2 \norm K}h^4 \int_K(u_{xx}^2 + u_{xy}^2)
+  \end{align*}
+  \end{itemize}
+Ergebnis:
+\begin{align*}
+  \norm{u-u^I}_{1, K} \leq C h \norm{u}_{2, K}
+\end{align*}
+1D: Lineare Interpolation: $\nnorm{u-u^I}_{1, \infty} \leq Ch^2\norm u _{2, \infty}$
+\end{beispiel}
+
+%\datum{10. November 2014}
+
+\paragraph{Zum Peano-Kern-Theorem:}
+$f$ sei hinreichend glatt: $f = \sum_{j = 0}^kD^jf(a)\frac{(\cdot - a)^j}{j!} + \int_a^bD^{k+1}f(t)\frac{(\cdot - t)^k}{k!}dt$ (per Taylor)
+
+$\lambda$ sei lineares Funktional, das auf Polynomen $k$-ten Grades verschwindet. 
+\begin{align*}
+  \Rightarrow \quad  \lambda(f) = \lambda\left( \int_a^bD^{k-1}f(t) \frac{(\cdot - t)^k_+}{k!}dt \right)
+\end{align*}
+\begin{theorem} Peano-Kern-Theorem
+  
+Für gewisse Funktionale $\lambda$ gilt 
+\begin{align*}
+  \lambda(f)= \int_a^bD^{k+1}f(t)K(t)dt
+\end{align*}
+($K$ heißt Peano-Kern).
+\end{theorem}
+Anwendung findet es in der Fehlerabschätzung für Quadraturformeln, zum Beispiel die Zwei-Punkte-Gaußformel, $k = 3$: 
+\begin{align*}
+  \text{Quadraturfehler } = \int_a^bf^{(4)}(t)K(t)dt,
+\end{align*}
+wobei $K$ explizit berechenbar ist.
+
+\begin{lemma} Bramble-Hilbert-Lemma
+  
+$q:H^{k+1}(B)\to \R$ sei ein beschränktes, sublineares Funktional. Falls dann $q(w) = 0$ für alle Polynome vom Grad $k$ gilt, so gilt
+\begin{align*}
+  \norm{q(0)} \leq C \norm v_k.
+\end{align*}
+Sublinearität: $q(u+ v)\leq q(u) + q(v)$
+\end{lemma}
+\begin{beweis}
+  \begin{itemize}
+  \item Sei $v \in H^{k+1}(B)$ gegeben. Dann existiert ein Polynom $w \in P_k$ mit $\int_BD^\alpha(v + w)$ = 0 für alle $\alpha$ mit $\norm \alpha \leq w$. Warum? in 2D, $k = 2$: 
+    \begin{align*}
+      w = c_0 + c_1x_1 + c_2x_2 + c_3x_1^2 + c_4x_1x_2 + c_5x_2^2
+    \end{align*}
+    (Bilde partielle (evtl. mehrfach) Ableitungen und ermittle so die Konstanten.)
+  \item Hilfsmittel: Poincare-Ungleichung:
+    \begin{align*}
+      \nnorm{u}_{k+1}^2 \leq c \left( \norm u_{k+1}^2  + \sum_{\norm \alpha \leq k} \norm{\int_BD^\alpha u}^2\right)
+    \end{align*}
+Anwendung auf $v + w$: 
+\begin{align*}
+  \nnorm{v + w}_{k+1} \leq c \norm {v + w}_{k+1}
+\end{align*}
+\item Die Sublinearität von $q$ führt zu (beachte $\norm{q(w) = 0}$)
+  \begin{align*}
+    \norm{q(v)} \leq \norm{q(v + w)} + \norm{q(w)} \leq c\nnorm{v + w}_{k + 1} \leq c\norm{v + w}_{k + 1} \leq = c \norm v_{k+1}.
+  \end{align*}
+  \end{itemize}
+\end{beweis}
+\begin{beispiel}
+  Lineare Finite Elemente, betrachte das Einheitsdreieck mit Ecken $(0,0), (0,1), (1,0)$. 
+  \begin{itemize}
+  \item $\norm{v - v^I}_1 \leq c \norm v _2$
+  \item Elementare Abschätzung: 
+    \begin{align*}
+      (v-v^I)_x &= v_x - (v(1,0)- v(0,0))\\
+      &= \int_0^1 v_x d \xi - \int_0^1v_x(\xi, 0) d \xi\\
+      &= \int_0^1 (v_x- v_x(\xi, y) + v_x(\xi, y)- v_x(\xi, 0) d \xi\\
+      &= \int_0^1 \int_\xi^x (v_{xx}(\mu y) d\mu d \xi +\int_0^1 \int_0^y v_{xy}(\xi, r)dr d \xi\\
+    \end{align*}
+Es folgt $\nnorm{(v-v^I)_x}_0 \leq c (\nnorm{v_{xx}}_0 + \nnorm{v_{xy}}_0)$
+
+Und bei Bramble-Hilbert: $\nnorm{(v-v^I)_x}_0 \leq c \left(\nnorm{v_{xx}}_0 + \nnorm{v_{xy}}_0 +  \nnorm{v_{yy}}_0\right)$
+  \end{itemize}
+\end{beispiel}
+Wir betrachten jetzt affin-äquivalente Familien von Langrange-Elementen.
+Affin-äquivalente Familie: $(K, P, \Sigma)$ sei finites Element,  $(\hat K, \hat P \hat \Sigma)$  ein Referenzelement. Es exisitere eine bijektive Abbildung $F$ mit $\hat K \to K$, sodass 
+\begin{enumerate}
+\item $P = \set{p \in K \to \R, \; p \circ F \in \hat P}$
+\item $\set{F(\tilde u), \tilde a \in \tilde K \text{ erzeugte Freiheitsgrade auf } \hat K} = \set{a, a\in K \text{ erzeugte Freiheitsgrade auf } K}$
+\end{enumerate}
+Zudem ist $F$ affin-linear.
+\begin{beispiel}
+  \begin{itemize}
+  \item $P_k$-Elemente auf Dreiecken
+  \item $Q_k$-Elemente auf Familien von Parallelogrammen
+  \end{itemize}
+\end{beispiel}
+
+Sei $K \subset \R^d$. Die Abbildung von einem Element $K$ zu dem Standardelement $K'$ sei $\phi(p) = x = Bp + b$. 
+\begin{lemma}
+  Ist $u \in H^l(K)$, so gilt $v \coloneqq u \circ \phi \in H^l(K')$, zudem ist
+  \begin{align*}
+    &\norm v_{l, K'}\leq c \nnorm B^l(\det B)^{- \frac 1 2} \norm u_{l, K}\\
+   & \norm v_{l, K} \leq c \nnorm {B^{-1}}^l(\det B)^{- \frac 1 2} \norm u_{l, K'}
+  \end{align*}
+\end{lemma}
+\begin{beweisidee}
+  $l = 1$:
+  \begin{align*}
+    \norm_{1,K'}^2 = \int_{K'} \sum\left(\frac{\partial v}{\partial p_i}\right)^2
+  \end{align*}
+Nun gilt:
+\begin{align*}
+&  \frac{\partial v}{\partial p_j} = \sum \frac {\partial u}{\partial x_i} \frac{\partial x_i} {\partial p_j},  \\
+&  \norm{\frac{\partial v}{\partial p_j}} = \max_i \norm{\frac{\partial u}{\partial x_i}} \sum\norm{\frac{partial x_i}{\partial p_j}} \\
+&\leq \max_i \norm{\frac{\partial u}{\partial x_i}} \nnorm B
+\end{align*}
+mit der Zeilensummennorm $\nnorm B$. Folgerung:
+\begin{align*}
+  \norm{\abl{v}{p_j} } \leq \max \norm{\abl{u}{x_j}}\nnorm B 
+\end{align*}
+also: 
+\begin{align*}
+  \norm v_{1, K'}^2 &\leq \nnorm B^2 (\det B)^{-1} \int_K (\max_i \norm{\abl{u}{x_i}})^2\\
+&\leq c\nnorm B^2 (\det B)^{-1} \int_K \sum \left(\abl{u}{x_i}\right)^2\\
+&= c\nnorm B^2 (\det B)^{-1} \norm u_{1, K}^2
+\end{align*}
+\end{beweisidee}
+Ziel: $\nnorm B$, $\nnorm {B^{-1}}$ durch etwas netteres ersetzen.
+\begin{lemma}
+  Sei $K \subset R^d$ und $K'$ Referenzelement. $K$ sei enthalten in einer Kugel mit dem Radius $R$ und enthalte eine Kugel mit dem Radius $\rho$, $K'$ entsprechend. 
+
+Dann exisiteren Konstanten $c_1, c_2$ mit
+\begin{align*}
+  \nnorm B \leq c_1 R\\
+\nnorm {B^{-1}} \leq \frac {c_2} \rho.
+\end{align*}
+\end{lemma}
+\begin{beweis}
+  Es existiert ein $p_1 \in K'$ mit $p_1 + p \in K'$ für alle $p$ mit $p \in B(p_1, \rho')$ (Kugel!).
+Sei
+\begin{align*}
+ & x_0 = B p_1 + b \in K, \\
+&x = B(p_1+ p) + b \in K.
+\end{align*}
+Folgerung: 
+\begin{align*}
+  \nnorm{x - x_0} \leq 2 R, 
+\end{align*}
+also (beachte $Bp = x - x_0$)
+\begin{align*}
+  \norm B = \frac 1 {\rho'} \sup_{\nnorm p = \rho'}\nnorm{Bp} = \frac 1 {rho'} \sup_{\nnorm p = \rho'}\nnorm{x - x_0}\leq \frac{2 R}{\rho'}
+\end{align*}
+\end{beweis} 
+
+Neues Ziel: Abschätzung von $\norm{u - \Pi_{Z, k}u}_{r, K}$ mit dem Projektor $\Pi_{Z, k}$, der auf Polynome von Grad $k$ auf $K$ über eine Familie $Z$ von Triangulationen abbildet ($\Pi_{u, K}v = v, v \in P_k$).
+\begin{enumerate}
+\item Transformation auf $K'$
+  \begin{align*}
+    \norm \cdot \leq c \nnorm{B^{-1}}^T(\det B)^{\frac 1 2} \nnorm{v - \Pi_{K', k}v}_{r, K'}
+  \end{align*}
+\item Bramble-Hilbert:
+  \begin{align*}
+        \nnorm{v - \Pi_{K', k}v}_{r, K'} \leq \norm v _{k+1, K'}
+  \end{align*}
+\item Zurück auf $K$: 
+  \begin{align*}
+    \norm v_{k+1, K'} \leq c \nnorm B^{k+1} (\det B)^{-1 \frac 12} \norm u_{k+1, K}
+  \end{align*}
+\end{enumerate}
+
+Zusammengefasst:
+\begin{align*}
+  \nnorm{u - \Pi_{Z, k}u}_{r, K}\leq c \frac {R_K^{k+1}}{\rho_K^r} \norm u_{k+1, K}
+\end{align*}
+
+%\datum{11. November 2014}
+
+\begin{definition}
+  Die Familie $Z$ der Triangulationen heißt \emph{quasi-uniform}, wenn 
+  \begin{align}\label{eq:quasiuniform}
+    \frac {R_k}{\rho_K} \leq c.
+  \end{align}
+Andere Bezeichnung: shape-regular
+\end{definition}
+$h_K$ sei der Durchmesser von $K$, der maximale Abstand von zwei Punkten in $K$. Quasi-uniforme Triangulation:
+\begin{align*}
+  \norm{u - \Pi_{Z, k}u}_{r, K} \leq c h_K^{k+1-r} \norm u_{k+1, K}
+\end{align*}
+\begin{beispiel}
+2D-Fall mit Dreiecken: Dann gilt
+
+\begin{center}
+
+  \eqref{eq:quasiuniform} $\Leftrightarrow$ Minimalwinkelbedingung
+\end{center}
+
+
+mit der Minimalwinkelbedingung: Es exisitert ein $\alpha_0$, sodass auf unserer Familie von Triangulationen der Innenwinkel aller Dreiecke nach unten durch $\alpha_0$ beschränkt ist.
+
+(Hat man Delauney, dann wird der minimale Winkel maximiert!)
+\end{beispiel}
+Es gelte nun $\Pi_{Z, k} \in H^1(\O)$ (global) (ist zum Beispiel erfüllt, wenn $u \in H^2$ und $\Pi_{Z, k} = u^I$, die Interpolierende von $u$ in $P_k$).
+
+%\begin{Wichtig!}
+Dann folgt ($h = \max h_K$)
+\begin{align*}
+&  \nnorm {u - u^I}_{0,\O} \leq c h^{k+1} \norm{u}_{k+1, \O}, \quad (r > 0)\\
+&  \norm{u - u^I}_{1, \O} \leq c h^k\norm u_{k+1, \O}, \quad (r = 1)
+\end{align*}
+vorrausgesetzt, $u \in H^{k+1}(\O)$, $k \geq 1$ (optimale Raten!).
+%\end{Wichtig!}
+Analog kann man beweisen:
+\begin{align*}
+  &  \nnorm {u - u^I}_{L_p(\O)} \leq c h^{k+1} \norm{u}_{W^{k+1, p}},\\
+&  \norm{u - u^I}_{W^{1, p}(\O)} \leq c h^k\norm u_{W^{k+1, p}}
+\end{align*}
+für $1 \leq p \leq \infty$.
+\begin{satz} Fundameltale Aussage über den Fehler der Finiten Element Methode
+  \begin{itemize}
+  \item Vorraussetzungen des Lax-Milgram-Lemmas ($V \subset H^1(\O)$)
+  \item $P_k$-Elemente auf einer quasi-uniformen Triangulation
+  \item $u \in H^{k+1}(\O)$
+  \end{itemize}
+Dann gilt für den Fehler der Finiten-Element-Methode
+\begin{align*}
+  \nnorm{u - u_h}_{1} \leq c h^k\norm u_{k+1}
+\end{align*}
+(Gilt im Prinzip auch für $Q_k$-Elemente.)
+\end{satz}
+Kann man auch Fehlerabschätzungen in anderen Normen($L_2, L_\infty$) herleiten? 
+\paragraph{Eine $L_2$-Abschätzung:} Der Interpolationsfehler ist $\nnorm{u-u^I}_0 \leq c h^{k+1} \norm u_{k+1}$.
+
+Hoffung: $\nnorm{u-u_h}_0 \leq c h^{k+1} \norm u_{k+1}$
+
+Zusätzliche Vorraussetzung: Das Hilfsproblem
+\begin{align*}
+  a(v, w) = (g, v) \quad \forall v \in V, \; g \in L_2
+\end{align*}
+besitzt eine Lösung $w \in H^2$ mit 
+\begin{align*}
+  \nnorm{w}_2 \leq c \nnorm g _0
+\end{align*}
+Diese zusätzliche Vorraussetzung erfüllen wir über das 'adjungierte'/'duale' Problem.
+Nitsche-Trick(Dualitätstrick): (dazu Hilfsproblem mit $g = u -u_h$!) 
+\begin{align*}
+  \nnorm{u - u_h}_0^2 &= a(u - u_h, w) \\
+& = a(u-u_h, w - w^I)\\
+&\leq c \nnorm{u - u_h}_1 \nnorm{w - w^I}_1\\
+&\leq c h^k \norm u_{k +1} h \norm w_2\\
+&\leq c h^{k+1} \norm u_{k+1}\nnorm{u - u_h}_0
+\end{align*}
+also 
+\begin{align*}
+  \nnorm{u - u_h}_0 \leq c h^{k +1}\norm u_{k+1}
+\end{align*}
+\begin{beispiel}
+  Sei $\O$ konvex, $f \in L_2$
+  \begin{align*}
+    - \Delta u &= f\\
+    u &= 0 \quad u \in \partial \O.
+  \end{align*}
+Dann sind die obigen Vorraussetzungen erfüllt.
+\end{beispiel}
+\begin{beispiel}
+  Singulär gestörter Fall:
+  \begin{align*}
+    - \eps \nabla u + b \cdot u + cu &= f\\
+u|_{\partial \O} &= 0
+  \end{align*}
+und $0< \eps<<1$. Es gilt
+\begin{align*}
+  \nnorm u_2 \leq c\eps^{- \frac 3 2} \nnorm f_0.
+\end{align*}
+Der Nitsche-Trick bringt nichts...
+\end{beispiel}
+
+Numerische Konvergenzraten: $\nnorm{u-u_h}$ ist proportional zu $Ch^\beta$, dann ist $\nnorm {u-h_{\frac h2}}$ proportional zu $C (\frac h 2)^\beta$.
+\begin{align*}
+  &\ln \nnorm{u-u_h} = \ln C + \beta \ln h\\
+  &\ln \nnorm{u-u_{\frac h 2}} = \ln C + \beta (\ln h-\ln 2)\\
+\Rightarrow &\beta = \frac {\ln\nnorm{u-u_h}-\ln\nnorm{u-u_{\frac h2}}}{\ln 2}
+\end{align*}
+Das ist die Numerische Konvergenzordnung. Ärgerlicherweise setzt das die Kenntnis der exakten Lösung vorraus.
+\begin{beispiel} aus FEM für Anfänger
+  \begin{align*}
+    - \Delta u &= f \quad u \in (0,1)^2\\
+u|_{\partial \O} &= 0
+  \end{align*}
+$u_{ex} =(\sin \pi x)(\sin \pi y) $
+\end{beispiel}
+\begin{beispiel}
+  \begin{align*}
+  - \Delta u = 0\\
+0 < r \leq 1\\
+0 \leq \phi \leq \frac {3 \pi}{2}\\
+u = r^{\frac 2 3} \sin (\frac 2 3 \phi) \notin H^2  
+  \end{align*}
+$\O$ ist nicht konvex.
+\end{beispiel}
+\begin{bemerkung}
+  Falls $u \in H^s$ mit $0<s \leq 1$ oder $u \in H^{1+s}$ mit $0< s<1$, so kann man durch 'Interpolation' auch optimale Fehlerabschätzungen beweisen.
+\end{bemerkung}
+Ludwig betrachtete in seiner Dissertation ein L-Gebiet (nichtkonvex) und
+\begin{align*}
+  - \eps \Delta u - 2 u_x - 3 u y + cu &= f\\
+u|_{\partial \O} &= 0\\
+0< \eps<<1&
+\end{align*}
+Er berechnete auf 'extrem feinen Gittern' mit drei verschiedenen Methoden die numerische Lösung.
+\paragraph{$L_\infty$-Abschätzungen}

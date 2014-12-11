@@ -1,0 +1,503 @@
+\section{Hauptkomponenten der FEM}
+
+Start: Mathematische Formulierung
+
+Ziel: Struktur des Programmcodes mit Einfachheit, Allgemeinheit, Flexibilität und Erweiterbarkeit als Nebenbedingungen (und soll objektorientert sein)
+
+Abstieg von der stetigen in die diskrete Welt \dots
+\setcounter{subsection}{0}
+\subsubsection{Abstrakte Formulierung}
+Hilbertraum $V$, Bilinearform $a: V\times V \to R$, Linearform $f: V \to \R$.
+\begin{center}
+\framebox{Finde $u \in V$, sodass $a(u, v) = f(v)$ für alle $v \in V = V(\O)$} 
+\end{center}
+\begin{bemerkung}
+  Zur Vereinfachung: 
+\item homogene Dirichlet-Randbedingungen
+\item kein Petrov-Galerkinverfahren (Ansatzraum $\neq$ Testraum)
+\end{bemerkung}
+\subsubsection{Diskretisierung A}
+\begin{itemize}
+\item $V_h \subset V$, $\dim V_h < \infty$, $V_h$ ist der FE-Raum
+  \begin{center}
+    \framebox{Die numerische Lösung $u_h \in V_h$ soll erfüllen:
+$a(u_h, v_h) = f(v_h)$ für alle $v_h \in V_h(\O)$}
+  \end{center}
+\end{itemize}
+\subsubsection{Diskretisierung B}
+\begin{itemize}
+\item exakte Berechnung von Integralen $a(\cdot, \cdot), f(\cdot)$ nur in Spezialfällen möglich (Quadraturregeln)
+
+$a(\cdot, \cdot) \approx a_h(\cdot, \cdot)$, $ f(\cdot) \approx f_h(\cdot)$, zum Beispiel $\int_E g dx \approx \sum_{i = 1}^{N_Q} g(x_i)w_i$, $w_i \in E$
+\end{itemize}
+\begin{center}
+  \framebox{$u_h \in V_h$: $a_h(u_h, v_h) = f_h(u_h)$ für alle $v_h \in V_h(\O)$} 
+\end{center}
+\subsubsection{Diskretisierung C}
+$V_h(\O) \approx V_h(\O_h)$, $\V_h(\O_h) \not \subset V  = V(\O)$
+\subsubsection{Variationelle Formulierung $\to$ LGS}
+Definiere Basis $\cB \coloneqq \set{\phi_1, \dots, \phi_N}$ von $V^h$, $N$ ist die Anzahl der Freiheitsgrade (nDoF). Damit für $u_h \in V_h$: 
+\begin{align*}
+ & v_h = \sum_{j = 1}^N u_j \phi_j\\
+ & U = (u_j)_{j = 1}^N \in \R^N \tilde = V_h, u_h \in V_h.
+\end{align*}
+Für $U \in \R^N$:
+\begin{align*}
+  \sum_{j = 1}^N u_j a_h(\phi_j, v_h) = f_h, \qquad \forall v_h \in V_h
+ \end{align*}
+Übung: das ist äquivalent zu: für $U \in \R^N$:
+\begin{align*}
+  \sum_j u_j \underbrace{a(\phi_j, \phi_i)}_{A_{ij}} = \underbrace{f(\phi_i)}_{F_i}, \qquad i = 1, \dots, N, 
+\end{align*}
+und mit diesen Abkürzungen können wir kürzer schreiben: für $U \in \R^N$
+\begin{align*}
+AU = F.
+\end{align*}
+Damit ist die Methode fast komplett beschrieben. Unbekannt ist noch, welche Basis zu verwenden ist. Die Antwort der FEM lautet, dass sie lokalen Support haben sollte und meist polynomial ist. Die Beschreibung von $\cB$ erfolgt durch ein Gitter/ Mesh $\cT_h$ 
+\begin{align*}
+  \cT_h = \set{K_i}_{i = 1}^{nE}, \; \inner\left(\bigcup_i K_i \right) = \O_h
+\end{align*}
+und Konzept der Referenzabbildung $\set{\Phi_K}_{K \in \cT_h}$.
+
+\paragraph{Zusammenfassung:} Wir benötigen 
+\begin{itemize}
+\item Gitter $\cT_h$ \Lcode{Mesh}
+\item Referenzelement $\hat K$ \Lcode{Element}
+\item Buchhaltung (lokale ($\hat \phi_i$) bzw. globale ($\phi_i$) Indizierung der Basisfunktionen) \Lcode{DoFManager}
+\item FE-Raum $V_h$ (Auswertung in $V_h$) \Lcode{FESpace}
+\item Quadraturregeln \Lcode{QuadRule}
+\item Operator ($Lu - f = 0$) $\set{a_h, f_h}$ \Lcode{Operator}
+\end{itemize}
+\paragraph{Programmstruktur}
+siehe Skizze (Blatt)
+'So einfach wie möglich.'
+\paragraph{Flexibilität durch Konzept der Vererbung}
+siehe Skizze (Blatt)
+
+Das gilt für alle Klassen.
+
+\subsubsection{Komponenten von Matlab}
+Klassendefinition
+\begin{verbatim}
+classdef Element < handle
+properties
+...
+end 
+methods
+function Element(obj, name)
+obj\_name = name
+end
+end 
+end
+\end{verbatim}
+
+Pakete: \Lcode{package}(Ordner), zum Beispiel \Lcode{+meshes}, beinhaltet \Lcode{Mesh.m, Tensormesh.m} \dots, oder \Lcode{+manager}, \Lcode{Work} beinhaltet \Lcode{mesh1} mit \Lcode{elements.txt, nodes.txt}, Daten \Lcode{A.m, f.m} und so weiter. 
+\begin{verbatim}
+classdef P1 < elements.Element
+...
+end
+\end{verbatim}
+Zur Initialisierung: 
+\begin{verbatim}
+call initPath.m
+openInstance('mesh1')
+\end{verbatim}
+%\datum{04. Dezember 2014}
+\subsection{Das Referenzelement}
+\begin{itemize}
+\item Jedes Element (Kante oder Dreieck, Viereck) des Gitters wund mittels einer Referenzabbildung (Parametrisierung) $\Phi_E$ beschrieben. Der Parameterbereich ist durch das sogenannte Referenzelement gegeben. 
+  \begin{enumerate}
+  \item Kante: $\hat K_F = [0, 1]$ $\Phi_F: \R \to \R^2: \Phi(\hat K_F) = F$
+\item Dreieck: $\hat K_T = \set{(\hat x,\hat y) \in [0, 1]^2: \; 1- \hat y \geq  \hat x}$, $\Phi_T: \R^2 \to \R$
+\item Vierecke $\hat K_R = \set{(\hat x, \hat y) \in [0,1]^2}$, $\Phi_R: \R^2 \to \R^2$. 
+  \end{enumerate}
+\item Für eine wohldefinierte Konstuktion von $V_h$ ist eine Festlegung von
+  \begin{itemize}
+  \item der Nummerierung der Ecken
+  \item der Nummerierung der Kanten
+  \item der lokalen Orientierung der Kanten notwendig
+  \end{itemize}
+  \begin{enumerate}
+  \item Kante: eine Kante, linker Endpunkt: 1, rechter Endpunkt: 2
+  \item Dreieck: 1: beim rechten Winkel, 2, 3: weiter im positiven Sinn. Kanten: wie Punkte, jeweils rechte Kante
+\item Viereck: 1. Punkt links unten, 2. rechts unten, 3. links oben, 4. rechts oben, untere Kante ist die erste, dann im math. pos. Sinn  
+  \end{enumerate}
+\item Auf $\hat K$ wird durch die Definition von (lokalen) Basisfunktionen $\cB \coloneqq \set{\hat \phi_i}_{i = 1}^{\Lcode{nB}}$ ein beliebiger, endlichdimensionaler Funktionenraum definiert. $(\hat V_h = \Span \cB)$. 
+\item Aufgabe des Referenzelementes im Code: 'Auswertung der $\hat \phi_i$s und deren Ableitungen in beliebigen Punkten $\hat x \in \hat K$'. 
+\end{itemize}
+Das heißt konkret: Die KLasse \Lcode{element.Element} stellt die Methode
+\begin{center}
+  \Lcode{B = getBasis(obj, points, order)}
+\end{center}
+bereit, wobei \Lcode{points} $\in \R(nP, nD)$, \Lcode{order} $\in{0, 1, \dots}$,\Lcode{B}$\in \R(nB, nP, [nD, nD])$.
+im Element: 
+\begin{verbatim}
+function B = getBasis(obj, points, order)
+switch order
+case 0
+B = obj. getD0Basis(points)
+case 1
+B = obj. getD1Basis(points)
+    end
+end
+\end{verbatim}
+Die in Element abstrakten Methoden \Lcode{getD\_Basis} müssen in konkreten Elementen definiert werden. (s. Skizze)
+\subsubsection{Dreieckselemente}
+\begin{enumerate}
+\item Lineare $L_1$-Elemente
+
+  \begin{align*}
+&    \hat \phi_1 = 1 - \hat x - \hat y\\
+&    \hat \phi_2 = \hat x\\
+&    \hat \phi_3 = \hat y\\
+&    \hat \psi_1 = 1-\hat x\\
+&    \hat \psi_2 = \hat x\\
+  \end{align*}
+\item $P_2$-Elemente
+
+  \begin{align*}
+    \hat \phi_i(\hat x _j) = \delta_{ij}
+  \end{align*}
+Es sind noch Koeffizienten aus diesen Bedingungen ermitteln. 
+\item hierarchisches $P_2$-Element
+  \begin{align*}
+    & \hat \phi_i(\hat x _j) = \delta_{ij}, \quad i, j \in \set{1, 2, 3}\\
+    & \hat \phi_i \in P_1, \qquad i = 1, 2, 3\\
+    & \hat \phi_{4 - 6} \text{ wie } P_2
+  \end{align*}
+\item Crouzeix-Raviart Element
+  
+  \begin{itemize}
+  \item linear
+  \item Lagrange
+  \item Stückpunkte = Kantenmittelpunkte
+  \end{itemize}   
+  \begin{align*}
+    & \hat \phi _1 = 2 \hat x + 2 \hat y - 1\\
+    & \hat \phi _2 = 1 - 2 \hat x\\
+    & \hat \phi _3 = 1 - 2 \hat y
+    \end{align*}
+    ($\hat x_i$ Kantenmittelpunkte)
+\end{enumerate}
+\subsubsection{Viereckselemente}
+\begin{enumerate}
+\item $Q_1$- Element
+  \begin{align*}
+    &\hat \phi_1 = (1- \hat x)(1- \hat y)\\
+    &\vdots\\
+    &\hat \phi_4 = \hat x \hat y
+  \end{align*}
+$\psi_i$ wie bei $P_1$. 
+\item $Q_2S$-Element (Serendipity-Element)
+  \begin{align*}
+   & \cB = \cB_{Q_1} \cap \set{\hat \phi_i}_{i = 5}^8\\
+   & \hat \phi _5 = \hat x (1 - \hat x)(1- \hat y) \\
+   & \vdots\\
+  \end{align*}
+('Quadratische Kantenbubbles')
+\end{enumerate}
+\begin{bemerkung*}
+  Auch parametrische Elemente möglich, welche eine ganze Klasse abdecken, zum Beispiel 'Parameter entspricht Polynomgrad/Raumdimension'
+\end{bemerkung*}
+Ziel der Übung: 
+\begin{itemize}
+\item Implementierung möglichst vieler konkreter Elementklassen
+\item Routine zur Visualisierung der Basis und Ableitungen 
+\end{itemize}
+\subsubsection{Finite Elemente beliebiger Ordnung} (zunächst für Vierecke)
+
+Betrachte $Q_1, Q_2, Q_3 \to Q_p$, $p$ Parameter
+
+Basisfunktionen und Ableitungen beliebiger Ordnung werden nicht mehr hart codiert, sondern auf Anfrage bei der Auswertung 'virtuell' generiert (Rekursionsformeln)
+
+\paragraph{Vorgehen:}
+\begin{enumerate}
+\item 1D-Formfunktionen
+  \begin{definition*}
+    Eine \markdef{Formfunktion} $N_k : I \coloneqq[-1, 1] \to \R$ ist eine Funktion der Form 
+    \begin{align*}
+      &N_0(x) \coloneqq \frac 1 2(1 - x)\\
+      &N_1(x) \coloneqq \frac 1 2(1 + x)\\
+      &N_k(x) \coloneqq   \frac {1}{\nnorm{L_{k-1}}_0} \int_{-1}^1 L_{k-1}(t) dt, \qquad k = 2, 3, \dots
+    \end{align*}
+mit den Legendrepolynomen $L_k$, $L_k(1) = 1, L_k(-1) = (-1)^k$. Es gilt
+\begin{align*}
+  N_k(\partial I) = 0, 
+\end{align*}
+weil 
+  \end{definition*}
+  \begin{bemerkung*}
+    \begin{itemize}
+    \item Anpassung der Approximationsgüte besonders leicht (p-Adaption, Serendipity-Element)
+    \item  $\set{N_k}_{k = 0}^p$ bilden eine Basis in $\Pi_p(I)$
+    \end{itemize}
+  \end{bemerkung*}
+\item Effiziente Auswertung der $N_k$'s
+
+Ohne Beweis gelten folgende Beziehungen:
+  \begin{enumerate}
+  \item $L _{k-1} = \frac 1 {2k-1} \frac d {dx}(L_k - L_{k-2})$
+  \item $L_k = J_k^{(0, 0)}$, $J_k^{(\alpha, \beta)}$ sind die orthogonalen Polynome bezüglich $(f, g)_* \coloneqq \int_I(f, g)(x)(1- x)^{\alpha}(1+x)^\beta dx$, $\alpha, \beta > -1$. 
+\item $\frac {d^n}{dx^n} J_k^{(\alpha, \beta)}(x) =  2^{-n} \frac {\Gamma(k+ n+ \alpha + \beta -1)}{\Gamma(\alpha + \beta + k + 1)} J_{k-n}^{\alpha + n, \beta + n}(x)$
+\item Jacobi-Polynome lassen sich schnell, stabil mit Rekursionsformeln berechnen
+  \end{enumerate}
+\item Redefiniere $N_k \to N_k$
+  \begin{align*}
+    \nu: &[0, 1] \to [0, 1]\\
+    & x \mapsto 2x -1\\
+& N_k  \coloneqq N_k \circ \nu: [0, 1] \to \R
+  \end{align*}
+
+$\hat K_I \coloneqq[0, 1]$, $\cB_p = \set{\hat \phi_k \coloneqq N_{k-1}| \; k = 1, \dots, p+1}$
+ \end{enumerate}
+\begin{uebung}
+  Zeige: aus (*), (1) und (3) folgt $\frac {d^n}{dx^n} N_k(x)= $ Expr. (Jac. Pol.) 
+\end{uebung}
+\begin{uebung}
+  Implementiere
+$y = \text{getJacobi}(x, k, \alpha, \beta)$
+
+$y = \text{getShapeFunctions}(x, k, n)$ mit der Ordnung $k$, $n$.
+\end{uebung}
+Nun für das Viereckselement $\hat K_R \coloneqq [0, 1]^2$: 
+
+\begin{itemize}
+\item Tensorprodunkt $\hat K_R \coloneqq \hat K_I \times \hat K_I$, $\cB_{Q_p} \coloneqq \cB_I \times \cB_I$. %tensor?!
+
+$B_1$: Viereckbezogene Basisfunktionen, $B_1 = \set{\hat \phi_i, i = 1, \dots, 4}$, $\hat \phi_1, (\hat x, \hat y) = N_0(\hat x) N_0 (\hat y)$, $\hat \phi_2$ bis $\hat \phi_4$ analog. 
+
+$B_2$: viermal $(p-1)$ Kantenbubbles
+\begin{align*}
+  &B_2 = \bigcup_{i = 0}^{p-2} \set{\hat \phi_{4 + 4i+ k} | \; k = 1, \dots, 4}\\
+  &\hat \phi_5 \coloneqq N_2(\hat x) N_0(\hat y)
+\end{align*}
+$\hat \phi_6$ analog. 
+
+$B_3$: $(p-1)^2$ innere Basisfunktionen $B_3 = \set{\hat \phi_{4p + k} | k = 1, \dots, (p-1)^2}$, $\cB_{Q_p} = B_1 \cup B_2 \cup B_3$.
+\end{itemize}
+%\datum{09. Dezember 2014}
+
+\subsection{Das Gitter}
+
+Hauptaufgabe:
+\begin{itemize}
+\item Beschreibung /Approximation von $\O$ durch $\O_h$
+\item Auswertung der Referenzabbildung $\set{\Phi_E}_E$ (siehe 1.1)
+\item Auswertung von Daten in lokalen Punkten
+\item Codieren von Konnektivitäts- und Nachbarschaftsbeziehungen 
+\end{itemize}
+Weitere Aspekte: 
+\begin{itemize}
+\item Verfeinerung
+\item globale Suche (Visualisierung von $V_h$)
+\item Visualisierung des Gitters
+\end{itemize}
+\subsubsection{Datenstrukturen und Konnektivität (2D)}
+Hauptstrukturen:
+\begin{enumerate}
+\item Punktwolke $\cN$ \Lcode{nodes} $\in \R(nN, 2)$ (\Lcode {nN}: number of nodes) (Rohdaten)
+\item Elemente $\cE = \set{(n_1, n_2, n_3)| \; n_i \in \N}$ (\Lcode{elem} $\in \N(nE, 3)$) (Rohdaten)
+\item Kanten des Gitters $\cF = \set{f_k = (n_1, n_2)| \; n_i \in \N}, \; k = 1, \dots, nF$ (\Lcode{faces} $\in \N(nF, 2)$)
+\item Abbildung \Lcode{n2F}$: \cN \times \cN \to \set{0, \dots, nF}$ (\Lcode{sparse(faces, faces(:., [2, 1]), [(1:nF)',(1: nF)])})
+\item Abbildung \Lcode{n2E}$: \cN \times \cN \to \set{0, \dots, nE}$
+\end{enumerate}
+Es sind weitere Datenstrukturen nötig und möglich:
+\begin{itemize}
+\item benachbarte Elemente einer Kante ($\cF \to \cE \times \cE$)
+\item benachbarte Kanten eines Elements ($\cE \to \cF^3$) (Dreiecke)
+\item benachbarte Elemente eines Elements
+\item benachbarte Kanten eines Knotens $\cN \to \bigcup_{ k > 0} \cF^k$
+\end{itemize}
+\begin{beispiel} Skizze siehe Blatt
+
+  nodes: 
+  \begin{tabular}{c c}
+    0.0 & 0.0 \\
+    1.0 & 0.0 \\
+    1.0 & 1.1 \\
+ \dots & \\
+    0.0 & -1.0 
+  \end{tabular}
+
+elem: 
+\begin{tabular}{c c c c}
+  1 &2 &4 & 3\\
+  8 &7 &1 & 2\\
+  7 &6 &2 & 5
+\end{tabular}
+
+faces:
+\begin{tabular}{c c }
+  1 & 2 \\
+7 & 8 \\
+\dots & \\
+5 & 6
+\end{tabular}
+\end{beispiel}
+
+\subsubsection{Orientierung}
+Problem: Die gemeinsame Kante zweier Dreiecke ist in den beiden Elementen entgegengesetzt orientiert.
+\begin{itemize}
+\item  wichtig bei $C^0$-Elementen: Vertauschung von Knoten
+\item verschiedene lokale Koordinatensysteme auf einer Kante möglich (siehe 1.3 DoF-Manager)
+\item lokale Speicherung der globalen Orientierung
+  \begin{align*}
+    \Lcode{orient} = 
+    \begin{bmatrix}
+      1 & 1 & -1\\
+      -1 & 1 &-1 \\
+    \end{bmatrix}
+  \end{align*}
+\end{itemize}
+  \begin{bemerkung*}
+    Verallgemeinerung auf 3D (Flächen) möglich, allerdings mit mehr als 2 Orientierungen (Tetraeder: 6, Quader: 8)
+  \end{bemerkung*}
+\subsubsection{Hierarchieinformationen}
+
+Motivation:
+\begin{itemize}
+\item effiziente Umsetzung von Verfeinerung und Vergröberung
+\item Multigrid-solver
+\end{itemize}
+Vorgehen:
+\begin{itemize}
+\item Das Gitter speichert seine Geschichte, also den Zustand auf konkreten Levels (level 0 ist das feinste Level (\Lcode{leaf level}))
+\item Jedes Element bekommt folgende zusätzliche Informationen:
+
+    \Lcode{level}: $\R^{nE \times 2}$ \dots in welchen Levels ist das jeweilige Element aktiv (leaf)
+
+\Lcode{child}:  $\R^{nE \times 10}$ \dots welche 'Kinder' hat ein (nicht aktives) Element
+
+\Lcode{father}:  $\R^{nE \times 2}$ \dots welches 'Vaterelement' wurde wie verfeinert
+\end{itemize}
+\begin{beispiel}
+  Skizze siehe Blatt
+
+
+  \begin{tabular}{c c c c c }
+    \# & \Lcode{level} & \Lcode{elem}& \Lcode{child} & \Lcode{father}  \\
+1 &  0 0 & 2 3 4 & 0 \dots 0 &  0 0\\
+2 &  0 0 & 2 4 3 & 0 \dots 0 &  0 0 \\ \hline
+1 &  0 1 & 1 3 4 & 0 \dots 0 &  0 0\\
+2 &  1 1 & 2 4 3 & 0 0 0 0 0 0 3 4 5 6 &  0 0\\
+3 &  0 0 & 1 7 6 & 0 \dots 0 &  2 7\\
+4 &  0 0 & \dots & 0 \dots 0 &  2 8\\
+5 &  0 0 & \dots & 0 \dots 0 &  2 9\\
+6 &  0 0 & \dots & 0 \dots 0 &  2 10
+  \end{tabular}
+\end{beispiel}
+Beliebige Verfeinerungshierarchien können erreicht werden. Eine analoge Hierarchie ist auch für Kanten nötig.
+
+\subsubsection{Referenzabbildung}
+Operationen auf physikalischen Elementen (Assemblierung, Integration, Auswertung) werden mittels Referenzabbildung oder auf dem Referenzellemt durchgeführt(pull-back) $\Phi_K: \hat K \to K$ ($C^\infty$-Diffeomorphismus). Beschreibung von $\Phi_K$:
+  \begin{enumerate}
+  \item $\Phi_K (\hat x) = p_1 +
+    \begin{pmatrix}
+      p_2 - p_1 & p_3 -p_1
+    \end{pmatrix}
+\hat x$
+\item alternative Beschreibung: 
+  \begin{align*}
+    \Phi_K (\hat x) = p_1 \hat \phi_1(\hat x) + p_2 \hat \phi_2(\hat x) + p_3 \hat \phi_3(\underline{\hat x}) = \sum_{i = 1}^3 p_i \hat \phi_i(\underline{\hat x})
+  \end{align*}
+\item Verallgemeinerung auf Elemente höherer Ordnung
+  \begin{align*}
+    \Phi_K \underline{\hat x} = \sum_{i = 1}^{nB} c_{i, k} \hat \phi_i (\underline{\hat x})
+  \end{align*}
+  \end{enumerate}
+  \begin{bemerkung*}
+    Analog wird eine Abbildung für Kanten beschrieben. 
+  \end{bemerkung*}
+
+%\datum{11.Dezember 2014}
+\subsubsection{Effiziente Auswertung von $\Phi_K$}
+Interface \Lcode{R = evalReferenceMap(points, order)}, \Lcode{points}$\in R(nP, nD)$, \Lcode{order}$\in \N$, \Lcode{R}$\in \R(nDim, nE, dP, nO)$
+mit nDim: Raumdimension, nE: Elementanzahl, nP: Punktanzahl, nO: Ableitungen mit
+\begin{align*}
+  points, order \mapsto \set{\sum_{ i = 1}^{nB} c_{i, k}D^n \hat\phi_i(\hat x_{k})}_{k= 1, \dots, nP, k = 1, \dots, nE}
+\end{align*}
+\begin{enumerate}
+\item Berechnung von 
+  \begin{align*}
+%    \set{\phi_i ( \underbar{ \hat{x}_k}) }_{i, k}
+  \end{align*}
+\begin{align*}
+  B \coloneqq \operatorname{ShapeElem.getBasis}(point, order) \in \R(nB,nP, nO)
+\end{align*}
+\item Bestimme $\set{c_{i, k}}_{i, k}$ aus dem Knotenvektor (\Lcode{nodes})
+  \begin{align*}
+    A \coloneqq \operatorname{obj.nodes}(\operatorname{obj.elem}, :) \in \R(nE \cdot nB, nD)
+  \end{align*}
+\item Summation über alle Basisfunktionen in Form von Matrizenmultiplikation 
+  \begin{align*}
+&C \coloneqq    \operatorname{reshape}(A', nDim \cdot nE, nB) \cdot \operatorname{reshape}(B, nB, nP \cdot nO)\\
+&C \in \R^{nDim \cdot nE \times nP \cdot nO}
+  \end{align*}
+\end{enumerate}
+\paragraph{Anwendung:} lokale Auswertung von Daten 
+\begin{align*}
+  - \Delta u = f
+\end{align*}
+\begin{itemize}
+\item Datem entsprechen der Koeffizientenfunktion, exakter Lösung
+\item globale Auswertung entspricht der klassischen Funktionsauswertung
+\item lokale Auswertung durch Vorgabe von Punkten $\set{\hat x_k}_k$ in Referenzelement/ Referenzkante, meist Quadraturpunkte
+\item Sei $f$ gegeben: function handle $\R^m \to \R^n$, 
+  \begin{align*}
+    R = \set{f(\Phi_K(\hat x_k))}_{k = 1, \dots, nP, K = 1, \dots, nE} \in \R(nE, nP)
+  \end{align*}
+\end{itemize}
+Vektorisierung:
+\begin{enumerate}
+\item Bestimme globale Punkte mittels $\Phi_i$'s
+  \begin{align*}
+    \Lcode{p = \operatorname{obj.evalReferenceMap}(points, 0) \in \R(nDim, nE, nP)}
+  \end{align*} 
+\item Funktionsauswertung
+  \begin{align*}
+ &   \Lcode{P = \operatorname{reshape}(P, nDim, nE \cdot nP)'}\\
+&\Lcode{R = f(P) \in \R(nE \cdot nP, 1)}
+  \end{align*}
+\item Umformung
+  \begin{align*}
+    \Lcode{R = \operatorname{reshape}(R, nE, nP, n)}
+  \end{align*} 
+\end{enumerate}
+
+Nützliche Befehle in Matlab:
+\begin{itemize}
+\item \Lcode{reshape}
+\item \Lcode{permute}
+\item \Lcode{bsxfun}
+\end{itemize}
+
+\subsection{DoF-Manager}
+
+Beispiel \dots <3
+\subsubsection{Programmstruktur}
+\begin{itemize}
+\item DoF-Manager hat \Lcode{mesh} als Membervariable
+\item Verbindung zum konkreten Referenzelement erfolgt üder statische Konstruktionsmethode 
+\item Jeder konkrete DoF-Manager muss abstrakte Methode \Lcode{computeConnectivityArray} umsetzen. 
+\end{itemize}
+\subsubsection{Grundidee}
+\begin{itemize}
+\item Verbindung zwischen Gitter und Referenzelement durch Zuweisung von sogenannten Freiheitsgraden $i$(DoF) zu individuellen Elementen $K$
+  \begin{align*}
+    i = dM(I, K)
+  \end{align*}
+und $I$ Basisfunktionen. 
+\item Betrachte die Referenzbasis
+\begin{align*}
+  \cB \coloneqq \set{\hat \phi_i}_{i = 1}^{nB}
+\end{align*}
+\end{itemize}
+\begin{beispiel*}
+  P1, stetig, siehe Skizze (Kuno)
+\end{beispiel*}
+\subsubsection{Lokal verschiedene Polynomgrade}
+\begin{itemize}
+\item Jedes Element bekommt zusätzliche Informationen des Polynomgrades
+\item Der Polynomgrad auf Kanten erfolgt bei stetigen Räumen nach der 'Minimalordnung'-Regel 
+\item Referenzelement ist von der Ordnung des maximalen Polynomgrades
+\end{itemize}

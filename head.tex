@@ -11,7 +11,8 @@
 \usepackage{mathtools}
 \usepackage{enumitem}
 \usepackage{extarrows}
-
+\usepackage{dsfont}
+\usepackage{color}
 
 \setlength{\parindent}{0pt}
 \renewcommand{\baselinestretch}{1.0}
@@ -45,18 +46,21 @@
 \newtheorem*{theorem*}{Theorem}
 \newtheorem{bemerkung}[satz]{\anstrich Bemerkung}
 \newtheorem*{bemerkung*}{\anstrich Bemerkung}
+\newtheorem{erinnerung}[satz]{\anstrich Erinnerung}
+\newtheorem*{erinnerung*}{\anstrich Erinnerung}
 \newtheorem{algorithmus}[satz]{\anstrich Algorithmus}
 \newtheorem*{algorithmus*}{\anstrich Algorithmus}
 \newenvironment{beweis}{\begin{proof}[Beweis]}{\end{proof}}  
 \newenvironment{beweisidee}{\begin{proof}[Beweisidee]}{\end{proof}}
 
 \newcommand{\markdef}[1]{\textbf{#1}}  
-\newcommand{\norm}[1]{\ensuremath{|#1|}}
-\newcommand{\nnorm}[1]{\ensuremath{\|#1\|}}
+\newcommand{\norm}[1]{\ensuremath{\left|#1\right|}}
+\newcommand{\nnorm}[1]{\ensuremath{\left \|#1 \right\|}}
 \newcommand{\nnnorm}[1]{\ensuremath{\||#1\||}}
 \newcommand{\set}[1]{\left\{ #1 \right\}}
-\newcommand{\abl}[2]{\frac{\partial #1}{\partial #2}}
-
+\newcommand{\abl}[2]{\ensuremath{\frac{\partial #1}{\partial #2}}}
+\newcommand{\ceil} [1]{\ensuremath{\left \lceil  #1 \right \rceil}}
+\newcommand{\floor}[1]{\ensuremath{\left \lfloor #1 \right \rfloor}}
 
 % Angestrichene Großbuchstaben
 \newcommand{\A}{\mathbb{A}}
@@ -74,7 +78,6 @@
 \newcommand{\M}{\mathbb{M}}
 \newcommand{\N}{\mathbb{N}}
 % \O fehlt (wird benötigt als \Omega)
-\newcommand{\mO}{\mathbb{O}}
 \renewcommand{\P}{\mathbb{P}}
 \newcommand{\Q}{\mathbb{Q}}
 \newcommand{\R}{\mathbb{R}}
@@ -86,6 +89,35 @@
 \newcommand{\X}{\mathbb{X}}
 \newcommand{\Y}{\mathbb{Y}}
 \newcommand{\Z}{\mathbb{Z}}
+
+% Alternativ
+
+\newcommand{\mA}{\mathbb{A}}
+\newcommand{\mB}{\mathbb{B}}
+\newcommand{\mC}{\mathbb{C}}
+\newcommand{\mD}{\mathbb{D}}
+\newcommand{\mE}{\mathbb{E}}
+\newcommand{\mF}{\mathbb{F}}   
+\newcommand{\mG}{\mathbb{G}}
+\newcommand{\mH}{\mathbb{H}}
+\newcommand{\mI}{\mathbb{I}}
+\newcommand{\mJ}{\mathbb{J}}
+\newcommand{\mK}{\mathbb{K}}
+\newcommand{\mL}{\mathbb{L}}
+\newcommand{\mM}{\mathbb{M}}
+\newcommand{\mN}{\mathbb{N}}
+\newcommand{\mO}{\mathbb{O}}
+\newcommand{\mP}{\mathbb{P}}
+\newcommand{\mQ}{\mathbb{Q}}
+\newcommand{\mR}{\mathbb{R}}
+\newcommand{\mS}{\mathbb{S}}
+\newcommand{\mT}{\mathbb{T}}
+\newcommand{\mU}{\mathbb{U}}
+\newcommand{\mV}{\mathbb{V}}
+\newcommand{\mW}{\mathbb{W}}
+\newcommand{\mX}{\mathbb{X}}
+\newcommand{\mY}{\mathbb{Y}}
+\newcommand{\mZ}{\mathbb{Z}}
 
 % Kalligraphisches Alphabet
 \newcommand{\cA}{{\cal A}}
@@ -122,11 +154,14 @@
 \newcommand{\Graph}{\operatorname{Graph}}
 \renewcommand{\div}{\operatorname{div}}
 \newcommand{\id}{\operatorname{id}}
+\newcommand{\per}{\operatorname{Per}}
+\newcommand{\dist}{\operatorname{dist}}
 \newcommand{\diam}{\operatorname{diam}}
 \newcommand{\inner}{\operatorname{int}}
 
 % Abkürzungen
 
+\newcommand{\1}{\mathds{1}}
 \newcommand{\eps}{\varepsilon}
 \renewcommand{\O}{\Omega}
 \renewcommand{\phi}{\varphi}
@@ -137,9 +172,14 @@
 \newcommand{\esssup}{\operatorname{ess\;sup}}
 \newcommand{\supp}{\operatorname{supp}}
 
+%Bezeichungen aus Lars Ludwigs Code
+
+\newcommand{\Lcode}[1]{{\color{green} #1}}
+
 % Things for equations  
 \numberwithin{equation}{section}
-\setcounter{subsection}{0}
-\setcounter{satz}{0}
 
+\setcounter{satz}{0}
+%!
 %\renewcommand{\labelenumi}{(\alph{enumi})}
+\newcommand{\enu}[1]{\renewcommand{\labelenumi}{(#1{enumi})}}

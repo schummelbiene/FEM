@@ -501,3 +501,732 @@ und $I$ Basisfunktionen.
 \item Der Polynomgrad auf Kanten erfolgt bei stetigen Räumen nach der 'Minimalordnung'-Regel 
 \item Referenzelement ist von der Ordnung des maximalen Polynomgrades
 \end{itemize}
+%\datum{16. Dezember 2014}
+
+Übersicht:
+\enu{\roman} 
+\begin{enumerate}
+\item Referenzfunktionen auf $\hat K$: $\set{\hat \phi_i}_{i = 1}^{nB}$
+\item Referenzabbildung $\set{\Phi_K: \hat K \to K_{K = 1}^{nE}}$
+\item Aus (i) und (ii) können lokale 'Weltfunktionen' gebaut werden:
+  \begin{align*}
+    \phi_{dA(i, K)} = \hat \phi_i \circ \Phi_K
+  \end{align*}
+mit dem DoF-Array $dA$. Zum Beispiel:
+\begin{align*}
+  dA =
+  \begin{pmatrix}
+    1 & 2\\
+    3 & 4\\
+    5 & 6\\
+    2 & 0
+  \end{pmatrix}
+\end{align*}
+Die erste Spalte entspricht dem ersten und die Zweite dem zweiten Element. Die erste Zeile entspricht der ersten Basisfunktion und so weiter. DAbei ist $\phi_0$ eine Papierkorbfunktion.   
+\end{enumerate}
+\subsubsection{Orientierung}
+Problem: Nichsymmetrische (bezüglich des Mittelpunktes der Kante) Kantenbasisfunktionen passen nicht (im $C^0$-Sinn) zusammen, falls lokale Kantenorientierung für benachbarte Elemente unterschiedlich ist. Wir benötigen eine globale Kantenorientierung zur Definition der globalen Basisfunktion. 
+
+Orientierungsinformation aus der \Lcode{Mesh} Klasse
+
+\Lcode{mesh.getOrient():}
+\begin{tabular}{c c c c}
+  Dreieck 1 & 1 &-1&1 \\
+  Dreieck 2 & -1 &1&-1 
+\end{tabular} $\Rightarrow$ \Lcode{orient}
+
+\begin{tikzpicture}
+  \coordinate[label = left:$1$] (1) at (0,0);
+  \coordinate[label = 135:$2$] (2) at (2,0);
+  \coordinate[label = above:$3$] (3) at (1,2);
+  \coordinate[label = right:$4$] (4) at (3,2);
+
+  \coordinate[label = -90:$(3)$] (1loc) at (0,0);
+  \coordinate[label = -90:$(1: 2)$] (2loc) at (2,0);
+  \coordinate[label = left:$(2: 1)$] (3loc) at (1,2);
+  \coordinate[label = -135:$(3)$] (4loc) at (3,2);
+
+  \draw (1) -- (2);
+  \draw (3) -- (2);
+  \draw (1) -- (3);
+  \draw (3) -- (4);
+  \draw (2) -- (4);
+\end{tikzpicture}
+
+Es gibt zwei Möglichkeiten:
+\begin{enumerate}
+\item allgemeine Gültigkeit: Die Kantenbasisfunktioen werden im Referenzelement in beide Orienterungen definiert und die richtige auf Grundlage von \Lcode{orient} ausgewählt. (die 'falsche' ist der Teil der Papierkorbfunktion, DoF 0).
+\item bei Punktsymmetrie ($Q_p$/ $P_p$-Elementen): Bei fehlender Orientierung reicht es, das Vorzeichen zu wechseln. Das Vorzeichen von \Lcode{orient} überträgt sich auf DoF und gibt an, dass der Negative der zugehörigen Referenzbasisfunktion durch $\Phi_K$ abgebildet wird. 
+  \begin{align*}
+    \phi_{ \norm{dA(i, k)}} (\hat \phi_i \circ \Phi_K^{-1}) \cdot \sign(cA(i, K))
+  \end{align*}
+\end{enumerate}
+\begin{beispiel}
+  zu (i): Betrachte die Skizze oben zu maximal kubischen Elementen. 
+Basisfunktionen:
+\begin{itemize}
+\item $\phi_i$ linear, $i = 1, 2, 3$
+\item $\phi_i$ quadratisch, $i = 4, 5, 6$
+\item $\phi_i$ kubisch, $i = 7, \dots, 12$
+\item $\phi_{13}$ im Inneren kubisch
+\end{itemize}
+
+  \begin{tabular}{c c}
+    Kante Basisfunktion
+$[1, 2]$& 5,6\\
+$[1, 3]$& 1,3,4 \\
+$[3, 4]$& 11,12\\
+$[2, 4]$&9,10\\
+$[2, 3]$&7,8\\
+$Dreiec$k & Basisfunktion \\
+$T_1$ & 15\\
+$T_2$ & 16
+  \end{tabular}
+
+DoF-Manager:
+\begin{align*}
+  \begin{pmatrix}
+    2 & 3\\
+    3 & 2\\
+    1 & 4\\
+    7 & 7\\
+    13 & 9\\
+    5 & 11\
+    8 & 0\\
+    0 & 10\\
+    6 & 0\\
+    0 & 8\\
+    13& 0\\
+    0 &12 \\
+    15&16
+  \end{pmatrix}
+\end{align*}
+
+zu (ii): Basisfunktionen:
+\begin{itemize}
+\item $\phi_i$ linear, $i = 1, 2, 3$
+\item $\phi_i$ quadratisch auf Kanten, $i = 4, 5, 6$
+\item $\phi_i$ kubisch auf Kanten , $i = 7, \dots, 9$
+\item $\phi_{10}$ im Inneren kubisch
+\end{itemize}
+
+
+DoF-Manager:
+\begin{align*}
+  \begin{pmatrix}
+    2 & 3\\
+    3 & 2\\
+    1 & 4\\
+    7 & 7\\
+    13 & 9\\
+    5 & 11\
+    8 & -8\\
+    -13 & 10\\
+    5 & -12\\
+    15&16
+  \end{pmatrix}
+\end{align*}
+\end{beispiel}
+\subsubsection{Vektorwärtige Finite-Element-Räume}
+$V \leftrightarrow V_h$
+\begin{align*}
+  \cV = V \times V = V^2\\
+\cV_h = V_h \times V_h = V_h^2
+\end{align*}
+mit $V_h = \Span \cB$ und $V_h^2 = (\Span \cB)^2 = \Span(\cB \otimes\cB)$ . 
+
+\paragraph{Variante 1}: per Definition von vektorwärtigen Basisfunktionen. Sei  $  u_h \in V_h^2 $:
+\begin{align*}
+u_h = \sum_{i = 1}^{2N} c_i \vec \phi_i
+\end{align*}
+mit der Dimension $N$ von $V_h$
+Vorteil: allgemein, insbesondere für nichttriviale vektorwärtige Elemente für $H(div)$, $H(rot)$ konforme Elemente
+Nachteil: Mehr Aufwand
+
+\paragraph{Variante 2}:
+\begin{align*}
+  V_h^2 = \Span \set{\cB \times \set 0, \set 0 \times \cB}
+\end{align*}
+$\vec \phi \in V_h^2$, 
+\begin{align*}
+  \vec \phi =
+  \begin{pmatrix}
+    \phi \\0 
+  \end{pmatrix}
+ \text{ oder }
+  \begin{pmatrix}
+    0\\\phi
+  \end{pmatrix}, \qquad \phi \in V_h
+\end{align*}
+Vorteil: elegant, Nachteil: Funktioniert für diesen bestimmten Fall der Basiswahl
+\begin{align*}
+&  u_h = \sum_{i = 1}^{N} \vec c_i \phi_i\\
+& \sum_{i = 1}^{2N} c_i \hat \phi_i =  \sum_{i = 1, 2, 2N-1} c_i
+\begin{pmatrix}
+  \phi(\frac i 2)\\0
+\end{pmatrix}
++ \sum_{i = 2, 2, 2N} c_i
+\begin{pmatrix}
+0\\  \phi(\frac i 2)
+\end{pmatrix}\\
+&= \sum_{j = 1}^N c_{2j-1}
+\begin{pmatrix}
+  \phi_j \\0
+\end{pmatrix} + \sum_{j = 1}^N c_{2j}
+\begin{pmatrix}
+  0\\\phi_j
+\end{pmatrix}\\
+&= \sum \underbrace{
+\begin{pmatrix}
+  c_{2j-1}\\c_{2j} 
+\end{pmatrix}}_{\vec c_j}
+\phi_j
+\end{align*}
+Damit lassen sich beliebige bereits implementierte DoF-Manager auf den vektorwäritgen Fall verallgemeinern. Jeder Eintrag in der DoFMap an Stelle $(i, K)$ repräsentiert zwei Freiheitsgrade $2i - 1$ und $2i$ (siehe in der Übung Lineare Elastititätstheorie und Stokes-Problem)
+\begin{beispiel}
+Betrachte
+
+\begin{tikzpicture}
+  \coordinate[label = left:$1$] (1) at (0,0);
+  \coordinate[label = right:$2$] (2) at (2,0);
+  \coordinate[label = left:$3$] (3) at (0,2);
+  \coordinate[label = right:$4$] (4) at (2,2);
+
+  \draw (1) -- (2);
+  \draw (3) -- (2);
+  \draw (1) -- (3);
+  \draw (3) -- (4);
+  \draw (2) -- (4);
+\end{tikzpicture}  
+
+mit lokaler Nummerierung
+
+\begin{tabular}{c c}
+  $T_1$&$2 -3-1$\\
+  $T_2$&$3 -2-4$
+\end{tabular}.
+
+Skalarer Fall:
+\begin{align*}
+  dM =
+  \begin{pmatrix}
+    2 & 3 \\
+    3 & 2\\
+    1 & 4
+  \end{pmatrix}
+\end{align*}
+Freiheitsgrade: 
+\begin{align*}
+&  1 = 2 \cdot 1 - 1 \leftrightarrow \phi_1 =
+  \begin{cases}
+    \begin{pmatrix}
+      1-x-y\\ 0
+    \end{pmatrix} & T_1\\
+    \begin{pmatrix}
+      0\\ 0
+    \end{pmatrix} & T_2\\
+  \end{cases}\\
+ & 2 = 2 \cdot 1 - 0 \leftrightarrow \phi_2 =
+  \begin{cases}
+    \begin{pmatrix}
+      0\\1-x-y
+    \end{pmatrix} & T_1\\
+    \begin{pmatrix}
+      0\\ 0
+    \end{pmatrix} & T_2\\
+  \end{cases}\\
+ & 3 = 2 \cdot 2 - 1 \leftrightarrow \phi_3 =
+  \begin{cases}
+    \begin{pmatrix}
+      x\\ 0
+    \end{pmatrix} & T_1\\
+    \begin{pmatrix}
+      1-y\\ 0
+    \end{pmatrix} & T_2\\
+  \end{cases}\\
+&  4 = 2 \cdot 2 - 0 \leftrightarrow \phi_1 =
+  \begin{cases}
+    \begin{pmatrix}
+      0\\x
+    \end{pmatrix} & T_1\\
+    \begin{pmatrix}
+      0\\ 1-y
+    \end{pmatrix} & T_2\\
+  \end{cases}
+\end{align*}
+
+\end{beispiel}
+\subsection{Der Finite Elemente Raum \Lcode{FESpace} }
+
+\begin{itemize}
+\item Durch 
+\framebox{Mesh$\stackrel{\text{DoF-Manager}}{\longleftrightarrow}$Element}$_{\text{FESpace}}$
+ ist der FE-Raum $V_h$ vollständig beschrieben.
+\item \Lcode{FESpace} ist/erbt von \Lcode{MeshObserver} und hat \Lcode{Mesh} als Membervariable
+\item zusätzliche Membervariablen von FE-Space: mesh, element, quadRule, DoFManager
+\item Hauptaufgabe: Modifikation und Auswertung von DoFVektoren, Assemblierung von Operatoren/Projektoren auf $V_h$ beziehungsweise nach $V_h$
+\end{itemize}
+Konkret lauten die Aufgaben:
+\begin{itemize}
+\item Auswertung von FE-Funktionen (punktweise)
+(Vektor von Freiheitsgraden $\R^{nDoF \times 1}$ $\leftrightarrow$ Funktionswärtig in lokalen Punkten $\R^{nE \times nP}$)
+\item Abfrage von Daten in den Quadraturpunkten (Koeffizienten, Referenzabbildung, ,$(\det(D \Phi_K))_K$, Normalenvektor)
+\item Assemblierung grundlegender Operatoren, Funktionale (zum Beispiel Massematrix, $(\int f \phi_i)_{i = 1}^{nDoF}$)
+\item Interpolation von beliebigen Funktionen in FE-Raum
+\item Projektionen zwischen zwischen verschiedenen Gitterlevels/ bzw um hängende Knoten zu behandeln. 
+\item Modifikationen von DoFVektoren:
+\begin{align*}
+&  f(u_h) = v_h\\
+& \nabla u_h \\
+& \int u_h
+\end{align*}
+\item Visualisierung von FE-Funktionen
+\item get- und set-Funktionen
+\end{itemize}
+
+%\datum{18. Dezember 2014}
+\subsubsection{Auswertung von FE-Funktionen (DoF-Vektoren)}
+Sei $V_{h}$ Finite Elemente Raum, $v_{h} \in V_{h}$ Finite Elemente Raum. 
+\begin{uebung*}
+  Gegeben sei $v_{h} \in \R^{nDoF}$, $\set{\hat x_{i}}_{i = 1}^{nP} \subset \hat K$, 
+
+Gescuht ist $\set{v_{h} (\Phi_{k(\hat x_{i})})}_{i = 1, \dots, nD, k = 1, \dots, nE} $, $V_{h} : \Omega_{h} \to \R$ ($v_{h} \tilde = \R^{nDoF})$
+\begin{align*}
+  v_{h}(\phi_{k(\hat x_{i})}) &= \sum_{J = 1}^{nDoF} v_{J}\phi_{J}(\Phi_{k}(x_{i}))\\
+&= \sum_{j = 1}^{nDoF} v_{dM(j, k)} \underbrace{\phi_{j}\circ\Phi_{k}}_{{\hat \phi_{j}}}(x_{i})\\
+&= \set{\sum_{j = 1}^{nDoF} v_{dM(j, k)}\hat \phi_{j}(\hat x_{i})}_{i = 1, \dots nP, j = 1, \dots, nE}\\
+\end{align*}
+(Beiträge nur für $\supp \phi_{J} \cap K_{k} \neq \emptyset$)
+
+Hierbei entsprechen die $\hat x_{j}$ \Lcode{points} und $\hat \phi_{j}(\hat x_{i})$ \Lcode{basis = element.getbasis(points, 0)}
+
+\Lcode{
+
+recall DoFMap valuesAtDoF
+  \begin{align*}
+&    \begin{pmatrix}
+      1 & 3\\ 5 & 6 \\ \vdots & \vdots \\ -81 & 0 \\ \vdots & \vdots
+    \end{pmatrix} 
+\Rightarrow 
+    \begin{pmatrix}
+      v_{11} & v_{12}\\ &\\ \vdots & \vdots \\ & \\ \vdots & \vdots
+    \end{pmatrix} 
+\\
+&nB \times nE \Rightarrow \dots
+  \end{align*}
+doFMap = obj.getDoFMap
+
+i = doFMap $\neq 0$
+
+valuesAtDoFs = zeros(size(doFMap))
+
+valuesAtDoFs(I) = sign(doFMap(I)).* $V_n$(abs(doFMap(I))) $\in \R(nB, nE)$
+
+R = valuesAtDoF's *basis}
+
+\Lcode{ 
+basis = permute(basis $[3, 2, 1]$) $\in \R(1, nP, nB)$
+
+value = permute(value $[2, 3, 1]$) $\in \R(ne, 1, nB)$
+
+R =  sum(bsxfun(@times, basis, value), 3)} (schöner / langsamer?!)
+\Lcode{bsxfun(@times, basis, value) $\in \R(nE, nP, nB)$}
+\end{uebung*}
+\paragraph{Lokale Auswertung für $\nabla$}
+\begin{align*}
+  \set{\nabla v_{h}( \Phi_{k}( \hat x_{i}))}_{k, i} = \set{\sum_{j = 1}^{nB} v_{dM(j, k)} \nabla \phi_{dM(j, k)}(\Phi_{k}(\hat x_{i}))}
+\end{align*}
+Nebenrechnung:
+\begin{align*}
+&\nabla \phi \circ \nabla (\phi \circ \Phi)  \\
+&D(\phi \circ \Phi) = D\phi \circ \Phi \cdot D\Phi\\
+&\nabla(\underbrace{\phi \circ \Phi}_{\hat \phi}) = D\phi^{T} (\nabla \phi \circ \Phi)\\
+&\nabla\phi \circ \Phi = D\phi^{-1 \circ T} \nabla \hat \phi)\\
+&= \set{\sum_{j} v_{dM(j, k)} D \Phi^{-T} \nabla \hat \phi(\hat x_{i})}_{k, i} = R
+\end{align*}
+\subsubsection{Quadratur}
+Typische Integrale (s. Assemblierung) haben die Form 
+\begin{align*}
+  I = \int_{\hat K} \underbrace{c \delta_{s}^{i} \hat \phi \delta_{t}^{j} \hat\psi \norm{\det D \Phi_{k}}}_{\Lambda(\hat x)} d \hat x, i, j = 0, 1, \dots, s, t \in \set{\hat x, \hat y}
+\end{align*}
+\begin{itemize}
+\item mögliche Auswertungen: symbolisch oder numerisch
+\item $I$ kann exakt berechnet werden, falls $\Phi_{k}$ linear und $C$ konstant ist 
+\item Die exakte Auswertung ist nicht nötig, um eine optimale Konvergenzordnung zu erreichen, da die Diskretisierung sowieso Fehler liefert. 
+\item Ziel: möglichst hohe Genauigkeit bei minimaler Anzahl von Funktionsauswertungen
+  \begin{align*}
+    I \approx \sum_{k = 1}^{nQ}\omega_{k} \Lambda(\hat x_{k})
+  \end{align*}
+(Gaußquadratur)
+\end{itemize}
+\paragraph{Gauß-Quadratur}
+\begin{itemize}
+\item Typischerweise auf (-1, 1)
+  \begin{align*}
+    \set{\hat x_{k}, \omega_{k}}_{k} \text{ so, dass } \sum_{k = 1}^{nQ} \omega_{k} p(\hat x) d \hat x \qquad \forall p \in \Pi_{N}, N >> 1
+  \end{align*}
+Daraus folgt ein nichtlineares Gleichungssystem für $2 nQ$ Unbekannte der Dimension $\Pi_{N} = N+1$. Also $N = 2nQ-1$ 
+\end{itemize}
+\begin{beispiel}
+  \begin{align*}
+    \int_{-1}^{1} g(\hat x) d \hat x \approx \frac {1}{g}(5g(- \sqrt{\frac 3 5}) + 8g(0) + 5g(- \sqrt{\frac 3 5}))
+  \end{align*}
+\end{beispiel}
+Theorie: $\set {\hat x_{k}}$ sind die Nullstellen der Legendre-Polynome
+
+\paragraph{2D-Vierecke} auf $(-1, 1)^{2}$: 
+
+Einfacher Tensoransatz: $M= nQ$
+
+\begin{align*}
+  \set{\hat x_{k}^{2D}}_{k= 1}^{M^{2}} = \set{\hat x_{k}^{1D}} \times\set{\hat x_{k}^{1D}}_{k = 1}^{m}\\
+(\omega_{k_{k}}^{2D})_{k} = (\omega_{k}^{1D}) \otimes (\omega_{k}^{1D})
+\end{align*}
+
+\paragraph{2D-Dreiecke}
+\begin{enumerate}
+\item Variante 1: Gegeben $(\hat x_{k}, \omega_{k})_{k}$ auf $(0, 1)^{2}$
+
+Abbildung des Vierecks auf ein Einheitsdreieck durch $T$ entlang von Isolinien.
+\begin{align*}
+&  p = T(q) =
+  \begin{pmatrix}
+    q_{1}(1-q_{2})\\ q_{2}
+  \end{pmatrix}
+\\
+& \int_{p \in \Delta} f(p) dp = \int_{q \in T^{-1}(\Delta)} f(T(q))\norm{J_{T}} dq \\
+= \int_{\square} (1-q_{2})f(T(q)) dq
+&\approx \underbrace{\sum w_{k}(1- \hat x_{k, 2})}_{\omega_{k}^{\Delta}}\underbrace{f(T(\hat x_{k}))}_{\hat x_{k}^{\Delta}}
+\end{align*}
+Nachteil: leichter Overhead, nicht symmetrisch
+
+Vorteil: nicht Nachteil (ii)
+\item Variante 2: Optimale Gaußquadratur
+  \begin{itemize}
+  \item Aufstellen von nichlinearem Gleichungssystem bezüglich optimaler Punkte und Gewichte mit Ziel
+    \begin{align*}
+      \int_{\Delta} g(\underbar x) d\underbar x
+    \end{align*}
+%exakt für $g \in \Span \set{x^{i}y^{i}|\; 0 \leq i, j, i+j \leq N} = P_{N}$, $N$ groß. Daraus entstehe ein nichtlineares Gleichungssystem für $3 nQP$, $\dim P_{N} = \frac {(N+1)(N+2)2}$
+\begin{align*}
+  nQP^{\Delta} = \ceil{\frac {(N+1)(N+2)}6}
+\end{align*}
+versus
+\begin{align*}
+  nQP^{\square} = \ceil{\frac {N+1}2}^{2}
+\end{align*}
+  \end{itemize}
+Nachteil:
+\begin{itemize}
+\item aufwändig zu berechnen
+\item geht nur tabelliert im Code ein
+\item Gegenstanda aktueller Forschung
+\end{itemize}
+Vorteil: nicht  (Nachteil oben)
+\end{enumerate}
+
+\begin{tabular}{c| c |c}
+N &$\triangle$  & $\square$ \\\hline
+1 & 1& 1\\
+2 & 2& 4\\
+3 & 4& 4\\
+4 & 5& 9\\
+5 & 7& 9\\
+6 & 9& 16\\
+7 & 12& 16
+\end{tabular}
+
+QuadRule hat eine abstrakte Methode \Lcode{getData()}, welche beim Erstellen des konkreten Quadratur-Objektes aufgerufen wird unf QP, Qgew in properties speichert. FESpace stellt Methoden zur Verfügung, welche in QP liefert...
+
+\begin{tabular}{c|c|c}
+  Daten & DoFVectors & Referenzabbildung\\ \hline
+\Lcode{evalFunctionIQP()}&\Lcode{evalDoFVectorIQP} & \Lcode{evalDef-MapQP}\\
+&&\Lcode{evalTrafoIQP()}\\
+&&\Lcode{(evalNormalVectorIQP)}\\
+\end{tabular}
+
+%\datum{06. Januar 2015}
+
+Prüfung: kleine Projekte + mündlicher Anteil 
+
+\subsubsection{Assemblierung}
+
+\begin{align*}
+&  - \Delta u + b \cdot \nabla u + cu = f
+&a(u, v) = f(v)\qquad \forall v \in V = H_{0}^{1}(\Omega)
+\end{align*}
+\begin{align*}
+&  <\cL u , v>_{V' \times V} = \int \nabla u \cdot \nabla v d u + \int b \cdot \nabla u v dx + \int c u v \, dx = \int f v \, dx = <f, v>_{V' \times V}\\
+&\cL: V \to V'\\
+&\cL_{h}: V_{h} \to V_{h}' \in R^{nDoF \times nDoF}\\
+&f \in V'\\
+&f_{h} \in V'_{h} \in \R^{nDoF}?
+\end{align*}
+\enu{\roman}
+\begin{enumerate}
+\item $L_2$-Skalarprodukt
+  \begin{align*}
+    f_{h} &= \set{\int_{\Omega_{h}} f v_{h} dx}_{v_{h} \in V_{h}} |_{\bar \O_{h} = \bigcup \cT_{h}}\\
+&= \set{\sum_{K \in \cT_{h}}\int_{K} f v_{h} dx}_{v_{h} \in V_{h}} \text{ (teste nur mit $\phi_{I} \in \cB_{V_{h}}$)}\\
+&= \set{\sum_{K \in \cT_{h}}\int_{K} f v_{I} dx}_{I = 1, \dots, nDoF} 
+  \end{align*}
+Es reicht diejenigen $\phi_{I}$'s auf $K$ zu betrachten, welche $\supp \phi_{I} \cap K \neq \emptyset$ $(*)$ erfüllen, das führt zur Betrachtung lokaler Basisfunktionen. 
+
+Transformation: 
+\begin{align*}
+&  \Phi_{K}: \hat K \to K\\
+&dx = \norm{D \Phi_{K}} d \hat x\\
+&x = \Phi(\hat x)\\
+\Rightarrow &= \set{\sum_{K: (*)} \int_{\hat K} \left(\underbrace{f \circ \Phi_{K}}_{\hat f}\right)\left( \phi_{I} \circ \Phi_{K} \right)\norm{D \Phi_{K}} d \hat x}_{I}\\
+ &= \stackrel{dMap}{\Big{\alpha}}\set{\int_{\hat K} \hat f \hat \phi_{i} \norm{D \Phi_{K}} d \hat x}_{i = 1 \dots, nB, k = 1, \dots, nE}\\
+ & \approx \stackrel{dMap}{\Big{\alpha}}\set{\sum_{q = 1}^{nQ} \hat f(\hat x_{q}) \cdot \hat \phi_{i}(\hat x_{q}) \norm{D \Phi_{K}(\hat x_{q})} w_{q}}_{i = 1 \dots, nB, k = 1, \dots, nE}
+\end{align*}
+$\alpha$: Schreibe an die Richtige Stelle und summiere auf (Assemblierung).
+
+Zutaten: 
+\begin{itemize}
+\item \Lcode{weights} $w \in \R(nQ, 1)$\Lcode{obj.getQuadData(d1)} (Codimension)
+\item \Lcode{points} $\hat x \in \R(nQ, nD)$\Lcode{obj.getQuadData(d1)} (Codimension)
+\item \Lcode{F} $F \in \R(nE, nQ)$ \Lcode{obj.mesh.evalFunction(f_h, points)}
+\item \Lcode{basis} $\set{\phi_{i(\hat x _{q})}} \in \R(nB, nQ)$ \Lcode{obj.element.getBasis(points, 0)}
+\item \Lcode{trafo} $\set{\norm{D \Phi_{k}(\hat x_{q})}_{q}}\in \R(nE, nQ)$ \Lcode{obj.mesh.getTrafo(points)}
+\end{itemize}
+
+Schritte
+\begin{itemize}
+\item \Lcode{entry = bsxfun(@times, $\overbrace{\text{F.*trafo}}^{\R(nE, nQ)}$, weights')* $\underbrace{\text{basis'}}_{\R(nQ \times nB)}$ }$\in \R(nE, nB)$
+\item \Lcode{[dMap, nDoF] = obj.getDoFMap(codim)} $\in \Z(nE, nB)$
+\item \Lcode{entry(dMap $<$ 0) = -entry(dMap)}
+\item \Lcode{I = (dMap $\neq$ 0)}
+\item \Lcode{F = full(sparse(abs(dMap(I)), ones(size(dMap(I)), entry(I)m nDoF, 1)))}
+\end{itemize}
+
+\item Massematrix
+  \begin{align*}
+    <\cLu, v> = \int_{\O} c u v \, dx  \\
+    <\cL_{h}u_{h}, v_{h}> = \int_{\O_{h}} c u_{h} v_{h} \, dx  \\
+\cL_{h} u_{h} = \set{\sum_{K} \int_{K} c u_{h} v_{h} dx}_{v_{h} \in V_{h}}\\
+= \set{\sum_{K} \int_{K} c \left(\sum_{j} u_{j}  \phi_{j}\right) \phi_{I} dx}_{I = 1, \dots, nDoF}}\\
+= \underbrace{\set{\sum_{K: (*)} \int_{K} c  \phi_{J} \phi_{I} dx}_{I = 1, \dots, nDoF}}}_{\cL_{h}} \cdot \set{\phi_{J}}_{J = 1, \dots, nDoF}\\
+ = \stackrel{dMap}{\Big{\alpha}}\set{\int_{\hat K}  c \circ \Phi_{K} \hat \phi_{j}  \hat \phi_{i} \norm{D \Phi_{k}} d \hat x}_{i, j = 1, \dots, nB, k = 1, \dots, nE}\\
+ = \stackrel{dMap}{\Big{\alpha}}\set{\sum_{q}}  \hat c(\hat x_{q}) \hat \phi_{j}(\hat x _{q}) \hat \phi_{i} (\hat x _{q}) T_{k}(\hat x _{q}) w_{q}}_{i, j = 1, \dots, nB, k = 1, \dots, nE}\\
+  \end{align*}
+mit $\norm{D\Phi_{k}} = T_{k}$ und $\hat c = c \circ \Phi_{k}$ und $(*) : \supp \phi_{J} \cap \supp \phi_{I} \cap K \neq \emptyset$ und den Zutaten
+\begin{itemize}
+\item \Lcode{weights, points, c, basis, trafo} wie in (i)
+\end{itemize}
+Schritte: 
+\begin{itemize}
+\item \Lcode{basisI = reshape(basis, 1, nB, nQ)}
+\item \Lcode{basisJ = reshape(basis, nB, 1, nQ)}
+\item \Lcode{basisIbasisJ = bsxfun(@times, basisI, basisJ)} $\in \R(nB, nB, nQ)$ (i, j, q)
+\item \Lcode{data = bsxfun(@times, C.*trafo, weights)} $\in \R(nE, nQ)$
+\item \Lcode{entry = reshape(basisIbasisJ, nB$^{2}$, nQ)*data'} $\in \R(nB^{2}, nE)$
+\item \Lcode{[dMap, nDoF] = obj.getDoFMap(codim)} $\in \R(nB, nE)$
+\item \Lcode{dMapI = kron(ones(nB, 1), dMap)}
+\item \Lcode{dMapJ = kron(dMap, ones(nB, 1))}
+\item \Lcode{entry(dMapI*dMap $<$ 0) = -entry(\dots)}
+\item \Lcode{I = dMapI $\neq$ 0 und dMapJ $\neq$ 0}
+\item \Lcode{M = sparse(abs(dMapI(I), abs(dMapJ(I)), entry(I), nDoF, nDoF)}
+\end{itemize}
+Kroneckerprodukt von Matrizen: Jedes Element der ersten Matrix wird mit der zweiten Matrix multipliziert.  
+
+%\datum{08. Januar 2014}
+
+\item Schwacher Laplace-Operator 
+  \begin{align*}
+    \int_{\Omega} a \nabla u \cdot \nabla v dx &= <\cLu, v>_{V \times V'}\\
+    <\cL_{h}u_{h}, v_{h}> &=  \int_{\Omega_{h}} a \nabla u_{h} \cdot \nabla v_{h} dx\\
+    \cL_{h}u_{h} &=  \set{\sum_{K}\int_{K} a \nabla u_{h} \cdot \nabla v_{h} dx}_{V_{h}}\\
+    &=  \set{\sum_{K}\sum_{J} u_{J} \int_{K}a \nabla \phi_{J} \cdot \nabla \phi_{I} dx}_{I = 1, \dots, cDoF}\\
+    &=  \underbrace{\set{\sum_{K}int_{K}a \nabla \phi_{J} \cdot \nabla \phi_{I} dx}_{I = 1, \dots, cDoF}}_{\cL_{h}} * \set{u_{J}}_{J}\\
+    \cL_{h}u_{h} &= \set{\sum_{K: (*)} \int_{K} a \nabla \phi_{J} \cdot \nabla \phi_{I} dx}_{I, J}\\
+    &= \set{\sum_{K: (*)} \int_{K} a \nabla \phi_{J} \cdot \nabla \phi_{I} dx}_{I, J}\\
+ &= \stackrel{dM}{\Big{\alpha}} \set{\int_{\hat K} \underbrace{a \circ \Phi_{k}}_{\hat a _{k}} \left( \left(\nabla \phi_{dM(j, k)}\right) \circ \Phi_{k}\right) \left(\left( \nabla\phi_{dM(i, k)}\right) \circ \Phi_{k}\right) \norm{D\Phi_{k}} d \hat x}_{i, j = 1, \dots, nB, k = 1, \dots, nE}\\
+ &= \stackrel{dM}{\Big{\alpha}} \set{\int_{K} \hat a _{k} \left( D\Phi_{k}^{-T}\nabla\hat \phi_{j}\right) \left(D\Phi_{k}^{-T}\nabla\hat\phi_{i}\right) \norm{D\Phi_{k}} d \hat x}\\
+ &= \stackrel{dM}{\Big{\alpha}} \set{\sum_{q} \hat a _{k_{q}} \underbrace{\underbrace{\left( D\Phi_{k}^{-T}\nabla\hat \phi_{j}\right)_{q}}_{dBasisG_{jqk}} \left(D\Phi_{k}^{-T}\nabla\phi_{i}\right)_{q}}_{[\cdot]_{x}[\cdot]_{x} + [\cdot]_{y}[\cdot]_{y}} \norm{D\Phi_{k}}_{q} W_{q}}
+\end{align*}
+mit Bedingung $(*):\; \supp \phi_{J} \cap \supp \phi_{I} \cap K \neq \emptyset$ und $x = \Phi_{K}(\hat x)$.
+
+Zutaten: 
+\begin{itemize}
+\item \Lcode{weights} $\in \R(nQ, 1)$
+\item \Lcode{points} $\in \R(nQ, nD)$, $nD = 2$
+\item \Lcode{A} $\in \R(nE, nQ)$
+\item \Lcode{dBasisG} $\in \R(nD, nB, nE, nQ)$, siehe nächster Abschnitt
+\item \Lcode{trafo} $\in \R(nE, nQ)$
+\end{itemize}
+Schritte:
+\begin{itemize}
+\item Felder: \Lcode{doFMapI, doFMapJ} siehe Massematrix
+\item Feld für Einträge \Lcode{entry}
+\item dann $\cL_{h}= $\Lcode{sparse(doFMapI, doFMapJ, entry)}
+\end{itemize}
+\Lcode{entry = bsxfun(@times, A.*trafo, weights')} $\in \R(nE, nQ)$
+
+\Lcode{dxBasisGI = reshape(dBasisG(1, :), 1, nB, nE, nQ)}
+
+\Lcode{dxBasisGJ = reshape(dBasisG(1, :), nB, 1, nE, nQ)}
+
+\Lcode{dxdx = bsxfun(@times, dxBasisI, dyBasisJ)} $\in \R(nB, nB, nE, nQ)$
+
+\Lcode{dyBasisGI = reshape(dBasisG(2, :), 1, nB, nE, nQ)}
+
+\Lcode{dyBasisGJ = reshape(dBasisG(2, :), nB, 1, nE, nQ)}
+
+\Lcode{dydy = bsxfun(@times, dxBasisI, dyBasisJ)} $\in \R(nB, nB, nE, nQ)$
+
+\Lcode{entry = bsxfun(@times,  reshape(entry, 1, 1, nE, nQ), dxx, dyy)}
+
+\Lcode{entry = sum(entry, 4)}
+\Lcode{entry = reshape(entry, nB$^{2}$), E} (Rest wie in (ii))
+
+\begin{bemerkung}
+  Nach Berechnung von \Lcode{dBasisG} lässt sich die Assemblierung in einer!! Zeile schreiben :)
+\end{bemerkung}
+\item Transformation von Ableitungen (erste und zweite)
+
+Bekannt: 
+\begin{align}
+  x &= \Phi(\hat x) \label{eq:arg}\\
+\phi(x) &= \hat \phi (\hat x) \label{eq:D0}\\
+\nabla \phi(x) &= D\Phi^{-T}(\hat x)\nabla\hat \Phi(\hat x) \label{eq:D1}
+\end{align}
+Die zweiten Ableitungen werden auch gebraucht, zum Beispiel bei Stomliniendiffusion, residualen Fehlerschätzern. 
+\begin{align}
+  D\nabla\phi\left(x\right) \cdot D \Phi\left(\hat x\right)&= \underbrace{D\left(D\Phi^{-T}\left(\hat x\right)\right) \nabla \hat\phi\left(\hat x\right)}_{= 0 \text{ auf gradlinig berandeten El.}} + D\Phi^{-T}\left(\hat x\right) D \nabla \hat \phi \left(\hat x\right) \notag\\
+\nabla^{2}\phi(x) &= D\Phi^{-T}\nabla^{2}\hat\phi(\hat x) D \Phi^{-1} \label{eq:D2}
+\end{align}
+Umsetzung in Matlab (vektorisiert): 
+\begin{itemize}
+\item \eqref{eq:D0} \Lcode{getBasis(points, 0)}
+\item \eqref{eq:D1} Matrix-Vektor-Multiplikation
+
+\Lcode{trafoInv = obj.mesh.evalInvJacobian(points)} \in $\R(nD_{i}, nD_{j}, nE, nP)$ calls \Lcode{evalReferenceMap(points, 1)}
+
+\Lcode{trafoInv = permute(trafoInv, [1 2 3 5 4])}
+
+\Lcode{ dBasis = obj.element.getBasis(points, 1)} $\in \R(nB, nP, bD_{i})$ 
+
+\Lcode{ dBasis = permute(dBasis, [3 4 5 1 2])}
+
+\Lcode{R = sum(bsxfun(@times, trafoInv, dBasis), 1)}
+
+\Lcode{R = permute(R, [3 4 5 2 1])}
+\end{itemize}
+\begin{bemerkung}
+  Einzeiler :)
+\end{bemerkung}
+\end{enumerate}
+\subsubsection{Interpolation in den FE-Raum}
+Zur Erinnerung: $V$ ist ein Hilbertraum in variationeller Formulierung. $V_{h} \subset V$ ist ein endlichdimensionaler Finite-Elemente-Raum. 
+
+Aufgabe: Für $g \in V$ finde $g_{h} \in V_{h}$ mit guten Approximationseigenschaften, das heißt $\nnorm{g - g_{h}}$ wird klein. Finde eine Abbildung $I: \; V \to V^{h}$ mit $\nnorm{g - Ig}$ klein.
+
+Klassisches Vorgehen: Vermesse $g$ und $V^{h}$ mittels einer linearen, stetigen Funktion. Seien $f_{i} \in V' = \cL_{b}(V, \R), \, i = 1, \dots, M$. Eigenschaften von $I$:
+\begin{align}{eq:I}
+  f_{i}(Ig) = f_{i}(g), \quad i = 1, \dots, M.
+\end{align}
+Außerdem
+\begin{align*}
+  g^{h}\coloneqq Ig \lognrightarrow Ig = \sum_{j = 1}^{N}g_{j}\phi_{j} 
+\end{align*}
+($N = nDoF$). Mit \eqref{eq:I} folgt
+\begin{align*}
+  \sum_{j=1}^{N} \sunderbrace{g_{j}f_{i}(\phi_{j})}_{{A_{ij}}} = \underbrace{f_{i}(g)}_{F_{i}}, \quad i = 1, \dots, M
+\end{align*}
+führt auf das lineare Gleichungssystem 
+\begin{align}\label{eq:lgs}
+  A g = F.
+\end{align}
+Wir nennen $(V_{h}, \set{f_{i})_{i = 1}^{N}}$ unisolvent, wenn $Ag = F$ eine eindeutige Lösung hat. Da $M = N$ sein soll und $(f_{i}(\phi_{j}))_{ij}$ muss regulär sein. DAmit beschreibt \eqref{eq:I} eine eindeutige Abbildung. Konkrete Wahl von $\set{f_{i}}_{i = 1}^{nDoF}$ beschreibt konkrete Interpolation. 
+\begin{beispiel}
+Mittels \eqref{eq:I} und \eqref{eq:lgs}:
+  \begin{align*}
+&    f_{i} = g \mapsto \int_{\O}g f_{i}dx = (g, \phi_{i})_{L_{2}}, \quadi = 1, \dots, nDoF\\
+\Rightarrow & (Ig, \phi_{i}) = (g_{i, \phi_{i}})\\
+&(Ig - g, \phi_{i}) = 0 \quad L_{2}\text{-Projektion}
+\Rightarrow& Ag = F \text{ mit } A = ((\phi_{j}, \phi_{i}))_{ij}, F = ((g, \phi_{i}))_{i = 1}^{\nDoF}
+\end{align*}
+Regularität von $A$:
+
+Betrachte $v \in \R^{N}\setminus\set{0}$ (entspricht  $v_{h} = \sum v_{i} \phi_{i}$)
+\begin{align*}
+  v^{T}Av = \sum_{ij} v_{i}v_{j}(\phi_{j}, \phi_{i}) = (v_{h}, v_{h}) = \nnorm{v_{h}}^{2} > 0
+\end{align*}
+Daher ist $A$ positiv definit und somit regulär ($v_{i} \neq 0$, da $v \neq 0$ und $\phi_{i}$ linear unabhängig)
+\end{beispiel}
+Im Code:
+
+\Lcode{
+U = evalGlobalL2Projection(obj, f)
+
+M = obj.assembleMassMatrix(@(x)x(:, 1).10, 0)
+
+F = obj.assembleL2Product(f,0)
+
+U = M\F;}
+\begin{beispiel}
+  \begin{align*}
+    b_{i} = g \mapsto a(G, \phi_{I}), \quad i = 1, \dots, nDoF
+  \end{align*}
+definieren die sogenannte Ritz-Projektion. 
+Regularität von $(a(\phi_{j}, \phi_{i}))_{ij}$ filgt aus der Koerzivität von $a(\cdot, \cdot)$ über $V_{h}$. (Wie im ersten Beispiel)
+\end{beispiel}
+\begin{beispiel}
+  In dein vorangegangenen Beispielen ist $f_{i}$ ein globaler Interpolator, das heißt, das Lösen eines globalen linearen Gleichungssystems ist notwendig :(. Besonders einfach: Lagrange-Interpolation.
+  \begin{align*}
+    f_{i} &= \delta_{x_{i}}\\
+f_{i}(g) &= g(x_{i})\\
+f_{i}(\phi_{j}) &= \phi_{j}(x_{i}) = \delta_{ij} = I d_{\R^{N \times N}} = A
+  \end{align*}
+\end{beispiel}
+\begin{beispiel}
+  Lokale $L_{2}$-Projektion: O.E.d.A. sei $p$ der Polynomgrad auf allen Elementen. 
+  \begin{align*}
+&    nDoF = nN + nF(p-1) + nE, \quad\text{nN = #Knoten, nF = #Kanten, nE = #Elemente}\\
+& f_{i}^{N} g = g(x_{i}), \quad i = 1, \dots, nN\\
+& V^h = V^h_{N} \setproduct V^h_{F} \setproduct V^h_{E}
+  \end{align*}
+$f_{i}^{N}$: Definierter Interpolator von $V \to V_{N}^{h}$. 
+\begin{align*}
+&  f_{j}^{F}g = \int_{F} g \phi_{dM^{F}(j+2), F} ds, \quad j = 1, \dots, p-1\\ 
+&  f_{j}^{E}g = \int_{E} g \phi_{dM^{E}(j+p\cdotnV), E} ds
+\end{align*}
+\end{beispiel}
+\begin{beispiel}
+  Randprojektion
+  \begin{align*}
+    &I_{\partial \Omega}: L_{2}(\partial \Omega) \to V^{h}|_{\partial \Omega}\\
+    &i \in dM(:, F)
+  \end{align*}
+ist definiert durch zum Beispiel $f_{i} = g \mapsto \int g \phi_{i} ds$. Zur Approximation von Randdaten: siehe Operatorklasse, Dirichletrandbedingung. Billiger als die volle $L_{2}$-Projektion.
+\begin{align*}
+  &I : H^{\frac 1 2}(\O) \to V^{h}\\
+  &I : P^{\O} I_{\partial \O}R^{\partial \O} g
+\end{align*}
+mit $P$: Prolongation durch $0$, $R^{\partial \O}: H^{\frac 1 2}(\Omega) \to L_{2}(\partial \O)$ (Spur-Operator) 
+\end{beispiel}
+Praktisch: im FESpace 
+
+\Lcode{
+
+U = obj.evalBoundaryProjection(f, [location])
+
+I = obj.mesh.isBoundaryFace([location])
+
+M = obj.assembleMassMatrix(@(x)1 + 0*x(:, 1), 1, I)
+
+ assembleL2Projection(f, 1, I)
+
+U = zeros(size(F))
+
+dMap = obj.getDoFMap(1)
+
+$\I$ = setdiff(unique(dMap(., I)), 0)
+
+U($\I$) = M($\I$, $\I$)$\setminus$ F($\I$)
+}
+
+location: zum Beispiel $x + y > 1$ als Dirichlet-Randbedingung
+

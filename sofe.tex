@@ -1,0 +1,17 @@
+\section{Lösen von PDGLs mittels $\S\mO\F\E$}
+\subsection{Poissongleichung und Behandlung von Randbedinungen}
+\begin{align*}
+  - a \Delta u &= f\\
+\left.u\right|_{\Gamma_{1}}&= w\\
+\left.\partial_{n}^{a} u\right|_{\Gamma_{2}}&= g\\
+\left.\partial_{n}^{a} u\right|_{\Gamma_{3}}&= r u + s
+\end{align*}
+mit
+\begin{align*}
+  \partial^{a}_{n} u = a n \cdot\nabla u
+\end{align*}
+Gesucht ist ein $z \in H^{1}_{oD}}$, sodass $a(w + z, v) = l(v)$ für alle $ v\in H^{1}_{oD}$
+\begin{align*}
+  a(z, v) = \tilde l(v) - a(w, v) \eqqcolon l(v) \quad \forall v \in H^{1}_{oD}(\Omega). 
+\end{align*}
+Praktisch: betrachte $z \in H_{0}^{1}(\Omega)$: $a(z, v) =l(v)$ für alle $v \in H^{1}(\Omega)$ + streiche Spalte und Zeile zu den Dirichlet-Rand-Freiheitsgraden. 

@@ -17,9 +17,12 @@
 \setlength{\parindent}{0pt}
 \renewcommand{\baselinestretch}{1.0}
 \usepackage[inner=2cm,outer=2cm,top=1.5cm,bottom=1.5cm,includeheadfoot]{geometry}
+
+
+
 \theoremstyle{remark}
 
-
+% hallo  
 
 % math environments
 
@@ -50,17 +53,24 @@
 \newtheorem*{erinnerung*}{\anstrich Erinnerung}
 \newtheorem{algorithmus}[satz]{\anstrich Algorithmus}
 \newtheorem*{algorithmus*}{\anstrich Algorithmus}
+\newtheorem{voraussetzung}[satz]{\anstrich Voraussetzung}
+\newtheorem*{voraussetzung*}{\anstrich Voraussetzung}
+\newtheorem{problem}[satz]{\anstrich Problem}
+\newtheorem*{problem*}{\anstrich Problem}
 \newenvironment{beweis}{\begin{proof}[Beweis]}{\end{proof}}  
 \newenvironment{beweisidee}{\begin{proof}[Beweisidee]}{\end{proof}}
 
 \newcommand{\markdef}[1]{\textbf{#1}}  
 \newcommand{\norm}[1]{\ensuremath{\left|#1\right|}}
+\newcommand{\scal}[1]{\ensuremath{\left<#1\right>}}
 \newcommand{\nnorm}[1]{\ensuremath{\left \|#1 \right\|}}
 \newcommand{\nnnorm}[1]{\ensuremath{\||#1\||}}
 \newcommand{\set}[1]{\left\{ #1 \right\}}
 \newcommand{\abl}[2]{\ensuremath{\frac{\partial #1}{\partial #2}}}
 \newcommand{\ceil} [1]{\ensuremath{\left \lceil  #1 \right \rceil}}
 \newcommand{\floor}[1]{\ensuremath{\left \lfloor #1 \right \rfloor}}
+\renewcommand{\(}{\ensuremath{\left(}}
+\renewcommand{\)}{\ensuremath{\right)}}
 
 % Angestrichene Großbuchstaben
 \newcommand{\A}{\mathbb{A}}
@@ -180,6 +190,10 @@
 \numberwithin{equation}{section}
 
 \setcounter{satz}{0}
-%!
+
 %\renewcommand{\labelenumi}{(\alph{enumi})}
 \newcommand{\enu}[1]{\renewcommand{\labelenumi}{(#1{enumi})}}
+
+\newcommand{\argmin}{\operatorname{arg\;min}}
+\newcommand{\argmax}{\operatorname{arg\;max}}
+\newcommand{\PF}{\operatorname{PF}}

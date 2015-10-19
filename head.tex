@@ -1,7 +1,7 @@
 \usepackage[utf8]{inputenc}
-\usepackage[ngerman]{babel}
+\usepackage[ngerman, english]{babel}
 
-\usepackage{ngerman}
+%\usepackage{ngerman}
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{amssymb}
@@ -10,27 +10,21 @@
 \usepackage{amsfonts}
 \usepackage{mathtools}
 \usepackage{enumitem}
+\usepackage{accents}
 \usepackage{extarrows}
 \usepackage{dsfont}
 \usepackage{color}
-
 \setlength{\parindent}{0pt}
 \renewcommand{\baselinestretch}{1.0}
 \usepackage[inner=2cm,outer=2cm,top=1.5cm,bottom=1.5cm,includeheadfoot]{geometry}
-
-
-
 \theoremstyle{remark}
+\input{susitex}
 
-% hallo  
-
-% math environments
-
+%   math environments
 \newcommand{\anstrich}{$\blacktriangleright$ \text{ }}
 \newcommand{\anstrichVariante}{$\square$ \text{ }}
-
-\newtheorem{satz}{\anstrich Satz}[section] 
-\newtheorem*{satz*}{\anstrich Satz} 
+\newtheorem{satz}{\anstrich Satz}[section]
+\newtheorem*{satz*}{\anstrich Satz}
 \newtheorem{lemma}[satz]{\anstrich Lemma}
 \newtheorem*{lemma*}{\anstrich Lemma}
 \newtheorem{proposition}[satz]{\anstrich Proposition}
@@ -57,28 +51,27 @@
 \newtheorem*{voraussetzung*}{\anstrich Voraussetzung}
 \newtheorem{problem}[satz]{\anstrich Problem}
 \newtheorem*{problem*}{\anstrich Problem}
-\newenvironment{beweis}{\begin{proof}[Beweis]}{\end{proof}}  
+\newtheorem*{fortsetzung}{\anstrich Fortsetzung}
+\newenvironment{beweis}{\begin{proof}[Beweis]}{\end{proof}}
 \newenvironment{beweisidee}{\begin{proof}[Beweisidee]}{\end{proof}}
-
-\newcommand{\markdef}[1]{\textbf{#1}}  
+\newcommand{\markdef}[1]{\textbf{#1}}
 \newcommand{\norm}[1]{\ensuremath{\left|#1\right|}}
 \newcommand{\scal}[1]{\ensuremath{\left<#1\right>}}
 \newcommand{\nnorm}[1]{\ensuremath{\left \|#1 \right\|}}
 \newcommand{\nnnorm}[1]{\ensuremath{\||#1\||}}
 \newcommand{\set}[1]{\left\{ #1 \right\}}
 \newcommand{\abl}[2]{\ensuremath{\frac{\partial #1}{\partial #2}}}
-\newcommand{\ceil} [1]{\ensuremath{\left \lceil  #1 \right \rceil}}
+\newcommand{\ceil} [1]{\ensuremath{\left \lceil #1 \right \rceil}}
 \newcommand{\floor}[1]{\ensuremath{\left \lfloor #1 \right \rfloor}}
 \renewcommand{\(}{\ensuremath{\left(}}
 \renewcommand{\)}{\ensuremath{\right)}}
-
 % Angestrichene Großbuchstaben
 \newcommand{\A}{\mathbb{A}}
 \newcommand{\B}{\mathbb{B}}
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\D}{\mathbb{D}}
 \newcommand{\E}{\mathbb{E}}
-\newcommand{\F}{\mathbb{F}}   
+\newcommand{\F}{\mathbb{F}}
 \newcommand{\G}{\mathbb{G}}
 \renewcommand{\H}{\mathbb{H}}
 \newcommand{\I}{\mathbb{I}}
@@ -87,7 +80,7 @@
 \renewcommand{\L}{\mathbb{L}}
 \newcommand{\M}{\mathbb{M}}
 \newcommand{\N}{\mathbb{N}}
-% \O fehlt (wird benötigt als \Omega)
+%   \O fehlt (wird benötigt als \Omega)
 \renewcommand{\P}{\mathbb{P}}
 \newcommand{\Q}{\mathbb{Q}}
 \newcommand{\R}{\mathbb{R}}
@@ -99,15 +92,13 @@
 \newcommand{\X}{\mathbb{X}}
 \newcommand{\Y}{\mathbb{Y}}
 \newcommand{\Z}{\mathbb{Z}}
-
-% Alternativ
-
+%   Alternativ
 \newcommand{\mA}{\mathbb{A}}
 \newcommand{\mB}{\mathbb{B}}
 \newcommand{\mC}{\mathbb{C}}
 \newcommand{\mD}{\mathbb{D}}
 \newcommand{\mE}{\mathbb{E}}
-\newcommand{\mF}{\mathbb{F}}   
+\newcommand{\mF}{\mathbb{F}}
 \newcommand{\mG}{\mathbb{G}}
 \newcommand{\mH}{\mathbb{H}}
 \newcommand{\mI}{\mathbb{I}}
@@ -128,7 +119,6 @@
 \newcommand{\mX}{\mathbb{X}}
 \newcommand{\mY}{\mathbb{Y}}
 \newcommand{\mZ}{\mathbb{Z}}
-
 % Kalligraphisches Alphabet
 \newcommand{\cA}{{\cal A}}
 \newcommand{\cB}{{\cal B}}
@@ -156,9 +146,8 @@
 \newcommand{\cX}{{\cal X}}
 \newcommand{\cY}{{\cal Y}}
 \newcommand{\cZ}{{\cal Z}}
-
 % Operatoren
-
+\newcommand{\pd}{\partial}
 \newcommand{\Span}{\operatorname{span}}
 \newcommand{\sign}{\operatorname{sign}}
 \newcommand{\Graph}{\operatorname{Graph}}
@@ -168,32 +157,39 @@
 \newcommand{\dist}{\operatorname{dist}}
 \newcommand{\diam}{\operatorname{diam}}
 \newcommand{\inner}{\operatorname{int}}
-
+\newcommand{\spur}{\operatorname{spur}}
+\newcommand{\ext}{\operatorname{ext}}
+\newcommand{\atan}{\operatorname{atan}}
 % Abkürzungen
-
 \newcommand{\1}{\mathds{1}}
 \newcommand{\eps}{\varepsilon}
 \renewcommand{\O}{\Omega}
 \renewcommand{\phi}{\varphi}
 \renewcommand{\l}{\lambda}
-
-% FEM
+\newcommand{\To}{\Rightarrow}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\cov}{\operatorname{cov}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Rey}{\operatorname{Re}}
+\newcommand{\St}{\operatorname{St}}
+\newcommand{\rg}{\operatorname{rg}}
+\newcommand{\Ker}{\operatorname{Ker}}
+\newcommand{\cl}{\operatorname{cl}}
+%   FEM
 \newcommand{\emb}{\hookrightarrow} % embedded (eingebettet)
 \newcommand{\esssup}{\operatorname{ess\;sup}}
 \newcommand{\supp}{\operatorname{supp}}
-
 %Bezeichungen aus Lars Ludwigs Code
-
 \newcommand{\Lcode}[1]{{\color{green} #1}}
-
-% Things for equations  
+% Things for equations
 \numberwithin{equation}{section}
-
 \setcounter{satz}{0}
-
 %\renewcommand{\labelenumi}{(\alph{enumi})}
 \newcommand{\enu}[1]{\renewcommand{\labelenumi}{(#1{enumi})}}
-
 \newcommand{\argmin}{\operatorname{arg\;min}}
 \newcommand{\argmax}{\operatorname{arg\;max}}
 \newcommand{\PF}{\operatorname{PF}}
+\newcommand{\ubar}[1]{\underaccent{\bar}{#1}}
+\newcommand{\rrto}{\rightrightarrows}
+\newcommand{\lto}{\longrightarrow}
+\newcommand{\In}{\ensuremath{\quad \text{in }}}
